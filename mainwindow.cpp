@@ -6,6 +6,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    int b;
+    int c;
+    QString vc;
+    int p;
 }
 
 MainWindow::~MainWindow()
