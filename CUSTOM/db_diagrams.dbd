@@ -1,0 +1,173 @@
+<XMLDiagram>
+  <TDBADiagramController Locked="0">
+    <Elements>
+      <TDBADiagramObject id="1" propertiesclass="TDiagramMetaTableProperties" objectname="address">
+        <TDiagramMetaTableProperties>
+          <Glyph>
+            <Geometry left="340" top="160" width="200" height="108"/>
+          </Glyph>
+        </TDiagramMetaTableProperties>
+      </TDBADiagramObject>
+      <TDBADiagramObject id="2" propertiesclass="TDiagramMetaTableProperties" objectname="customer">
+        <TDiagramMetaTableProperties>
+          <Glyph>
+            <Geometry left="120" top="0" width="200" height="122"/>
+          </Glyph>
+        </TDiagramMetaTableProperties>
+      </TDBADiagramObject>
+      <TDBADiagramObject id="3" propertiesclass="TDiagramForeignKeyProperties" objectname="customer.Foreign_key01">
+        <TDiagramForeignKeyProperties>
+          <Relation>
+            <Geometry left="48" top="48" width="200" height="100"/>
+            <Glyph>
+              <Geometry>
+                <Point x="220" y="61"/>
+                <Point x="440" y="210"/>
+              </Geometry>
+            </Glyph>
+          </Relation>
+        </TDiagramForeignKeyProperties>
+      </TDBADiagramObject>
+      <TDBADiagramObject id="4" propertiesclass="TDiagramMetaTableProperties" objectname="log">
+        <TDiagramMetaTableProperties>
+          <Glyph>
+            <Geometry left="200" top="350" width="200" height="80"/>
+          </Glyph>
+        </TDiagramMetaTableProperties>
+      </TDBADiagramObject>
+      <TDBADiagramObject id="5" propertiesclass="TDiagramMetaTableProperties" objectname="schedule">
+        <TDiagramMetaTableProperties>
+          <Glyph>
+            <Geometry left="730" top="140" width="200" height="122"/>
+          </Glyph>
+        </TDiagramMetaTableProperties>
+      </TDBADiagramObject>
+      <TDBADiagramObject id="6" propertiesclass="TDiagramForeignKeyProperties" objectname="schedule.Foreign_key02">
+        <TDiagramForeignKeyProperties>
+          <Relation>
+            <Geometry left="96" top="96" width="200" height="100"/>
+            <Glyph>
+              <Geometry>
+                <Point x="830" y="201"/>
+                <Point x="220" y="60"/>
+              </Geometry>
+            </Glyph>
+          </Relation>
+        </TDiagramForeignKeyProperties>
+      </TDBADiagramObject>
+      <TDBADiagramObject id="7" propertiesclass="TDiagramMetaTableProperties" objectname="services">
+        <TDiagramMetaTableProperties>
+          <Glyph>
+            <Geometry left="470" top="30" width="200" height="66"/>
+          </Glyph>
+        </TDiagramMetaTableProperties>
+      </TDBADiagramObject>
+      <TDBADiagramObject id="8" propertiesclass="TDiagramForeignKeyProperties" objectname="schedule.Foreign_key01">
+        <TDiagramForeignKeyProperties>
+          <Relation>
+            <Geometry left="128" top="128" width="200" height="100"/>
+            <Glyph>
+              <Geometry>
+                <Point x="830" y="200"/>
+                <Point x="570" y="63"/>
+              </Geometry>
+            </Glyph>
+          </Relation>
+        </TDiagramForeignKeyProperties>
+      </TDBADiagramObject>
+      <TDBADiagramObject id="9" propertiesclass="TDiagramMetaTableProperties" objectname="stylist">
+        <TDiagramMetaTableProperties>
+          <Glyph>
+            <Geometry left="890" top="440" width="200" height="136"/>
+          </Glyph>
+        </TDiagramMetaTableProperties>
+      </TDBADiagramObject>
+      <TDBADiagramObject id="10" propertiesclass="TDiagramForeignKeyProperties" objectname="stylist.Foreign_key01">
+        <TDiagramForeignKeyProperties>
+          <Relation>
+            <Geometry left="160" top="160" width="200" height="100"/>
+            <Glyph>
+              <Geometry>
+                <Point x="990" y="508"/>
+                <Point x="440" y="210"/>
+              </Geometry>
+            </Glyph>
+          </Relation>
+        </TDiagramForeignKeyProperties>
+      </TDBADiagramObject>
+      <TDBADiagramObject id="11" propertiesclass="TDiagramForeignKeyProperties" objectname="schedule.Foreign_key03">
+        <TDiagramForeignKeyProperties>
+          <Relation>
+            <Geometry left="176" top="176" width="200" height="100"/>
+            <Glyph>
+              <Geometry>
+                <Point x="830" y="200"/>
+                <Point x="990" y="508"/>
+              </Geometry>
+            </Glyph>
+          </Relation>
+        </TDiagramForeignKeyProperties>
+      </TDBADiagramObject>
+      <TDBADiagramObject id="12" propertiesclass="TDiagramMetaTableProperties" objectname="user">
+        <TDiagramMetaTableProperties>
+          <Glyph>
+            <Geometry left="480" top="500" width="200" height="94"/>
+          </Glyph>
+        </TDiagramMetaTableProperties>
+      </TDBADiagramObject>
+      <TDBADiagramObject id="13" propertiesclass="TDiagramForeignKeyProperties" objectname="user.Foreign_key01">
+        <TDiagramForeignKeyProperties>
+          <Relation>
+            <Geometry left="208" top="208" width="200" height="100"/>
+            <Glyph>
+              <Geometry>
+                <Point x="580" y="547"/>
+                <Point x="440" y="210"/>
+              </Geometry>
+            </Glyph>
+          </Relation>
+        </TDiagramForeignKeyProperties>
+      </TDBADiagramObject>
+      <TDBADiagramObject id="14" propertiesclass="TDiagramForeignKeyProperties" objectname="log.Foreign_key01">
+        <TDiagramForeignKeyProperties>
+          <Relation>
+            <Geometry left="224" top="224" width="200" height="100"/>
+            <Glyph>
+              <Geometry>
+                <Point x="300" y="390"/>
+                <Point x="580" y="547"/>
+              </Geometry>
+            </Glyph>
+          </Relation>
+        </TDiagramForeignKeyProperties>
+      </TDBADiagramObject>
+      <TDBADiagramObject id="15" propertiesclass="TDiagramForeignKeyProperties" objectname="schedule.Foreign_key04">
+        <TDiagramForeignKeyProperties>
+          <Relation>
+            <Geometry left="240" top="240" width="200" height="100"/>
+            <Glyph>
+              <Geometry>
+                <Point x="830" y="200"/>
+                <Point x="580" y="547"/>
+              </Geometry>
+            </Glyph>
+          </Relation>
+        </TDiagramForeignKeyProperties>
+      </TDBADiagramObject>
+      <TDBADiagramObject id="16" propertiesclass="TDiagramForeignKeyProperties" objectname="stylist.Foreign_key02">
+        <TDiagramForeignKeyProperties>
+          <Relation>
+            <Geometry left="256" top="256" width="200" height="100"/>
+            <Glyph>
+              <Geometry>
+                <Point x="990" y="510"/>
+                <Point x="580" y="547"/>
+              </Geometry>
+            </Glyph>
+          </Relation>
+        </TDiagramForeignKeyProperties>
+      </TDBADiagramObject>
+    </Elements>
+    <Surface zoom="100" scrollx="0" scrolly="0"/>
+  </TDBADiagramController>
+</XMLDiagram>
