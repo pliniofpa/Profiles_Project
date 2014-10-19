@@ -6,6 +6,7 @@
 #include <QStringList>
 #include <QDebug>
 #include "newcustomerdialog.h"
+#include <QSqlDatabase>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -18,6 +19,8 @@ MainWindow::MainWindow(QWidget *parent) :
     this->time_format = "hh:mm AP";
     this->create_daily_appt();
     this->make_connections();
+    qDebug()<< QSqlDatabase::drivers();
+
 }
 
 MainWindow::~MainWindow()
