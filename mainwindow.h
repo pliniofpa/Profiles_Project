@@ -17,6 +17,7 @@ public:
     ~MainWindow();
 private slots:
     void showCreateCustomerDialog();
+    void showCreateStylistDialog();
 
 private:
     Ui::MainWindow *ui;

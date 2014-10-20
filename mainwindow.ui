@@ -75,7 +75,8 @@
     <property name="title">
      <string>Create</string>
     </property>
-    <addaction name="action_create_Customers"/>
+    <addaction name="action_create_Customer"/>
+    <addaction name="action_create_Stylist"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -153,9 +154,14 @@
     <string>Ctrl+B</string>
    </property>
   </action>
-  <action name="action_create_Customers">
+  <action name="action_create_Customer">
    <property name="text">
     <string>Customer</string>
+   </property>
+  </action>
+  <action name="action_create_Stylist">
+   <property name="text">
+    <string>Stylist</string>
    </property>
   </action>
  </widget>

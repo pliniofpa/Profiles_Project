@@ -5,11 +5,13 @@
 #include <QTableWidgetItem>
 #include <QStringList>
 #include <QDebug>
-#include "newcustomerdialog.h"
 #include <QSqlTableModel>
 #include <QSqlRecord>
 #include <QSqlError>
+#include "newcustomerdialog.h"
 #include "ui_newcustomerdialog.h"
+#include "newstylistdialog.h"
+#include "ui_newstylistdialog.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -49,8 +51,10 @@ void MainWindow::showCreateCustomerDialog(){
     NewCustomerDialog dialog;
     if(dialog.exec()){
         QSqlTableModel customer_table_model;
-        customer_table_model.setEditStrategy(QSqlTableModel::OnManualSubmit);
         customer_table_model.setTable("address");
+        customer_table_model.setEditStrategy(QSqlTableModel::OnManualSubmit);
+        customer_table_model.select();
+        //customer_table_model.insertRow(customer_table_model.rowCount()+1);
         QSqlRecord new_record;
         //Adds data from form to Record
         new_record.setValue("address",dialog.ui->address_lineEdit_5->text());
@@ -62,15 +66,27 @@ void MainWindow::showCreateCustomerDialog(){
         new_record.setValue("zip_code","asdfdf");
         new_record.setValue("city","asdfsdaf");
         new_record.setValue("state","IN");
+        new_record.setValue("id",1);
         //Adds record to model
-        customer_table_model.insertRecord(1,new_record);
+        customer_table_model.insertRecord(-1,new_record);
         //Aplies the change to table
         if(!customer_table_model.submitAll()){
             qDebug()<<customer_table_model.lastError();
+            return;
         }
+        qDebug()<<"SEm erro";
         return;
     }
 }
+void MainWindow::showCreateStylistDialog(){
+    NewStylistDialog dialog;
+    if(dialog.exec()){
+        return;
+    }
+    qDebug()<<"SEm erro";
+    return;
+}
 void MainWindow::make_connections(){
-    QObject::connect(this->ui->action_create_Customers,SIGNAL(triggered()),this,SLOT(showCreateCustomerDialog()));
+    QObject::connect(this->ui->action_create_Customer,SIGNAL(triggered()),this,SLOT(showCreateCustomerDialog()));
+    QObject::connect(this->ui->action_create_Stylist,SIGNAL(triggered()),this,SLOT(showCreateStylistDialog()));
 }
