@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>images/1413781045_Add.png</file>
+        <file>images/1413781065_Settings.png</file>
+        <file>images/1413781093_Delete.png</file>
+        <file>images/1413781114_Edit.png</file>
+        <file>images/1413781129_Send.png</file>
+        <file>images/1413781166_Cut.png</file>
+        <file>images/1413782209_coffee.png</file>
+        <file>images/1413782499_kteatime.png</file>
+        <file>images/1413782606_Person_CoffeeBreak_Male_Dark.png</file>
+    </qresource>
+</RCC>

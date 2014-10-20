@@ -102,7 +102,7 @@
         <item>
          <widget class="QLabel" name="label_6">
           <property name="text">
-           <string>ZIP-CODE:</string>
+           <string>Zip-Code:</string>
           </property>
           <property name="buddy">
            <cstring>zip_code_lineEdit_6</cstring>

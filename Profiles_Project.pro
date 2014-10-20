@@ -22,3 +22,6 @@ HEADERS  += mainwindow.h \
 
 FORMS    += mainwindow.ui \
     newcustomerdialog.ui
+
+RESOURCES += \
+    resources.qrc

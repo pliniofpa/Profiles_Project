@@ -6,7 +6,10 @@
 #include <QStringList>
 #include <QDebug>
 #include "newcustomerdialog.h"
-#include <QSqlDatabase>
+#include <QSqlTableModel>
+#include <QSqlRecord>
+#include <QSqlError>
+#include "ui_newcustomerdialog.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -19,8 +22,6 @@ MainWindow::MainWindow(QWidget *parent) :
     this->time_format = "hh:mm AP";
     this->create_daily_appt();
     this->make_connections();
-    qDebug()<< QSqlDatabase::drivers();
-
 }
 
 MainWindow::~MainWindow()
@@ -47,10 +48,28 @@ void MainWindow::create_daily_appt(){
 void MainWindow::showCreateCustomerDialog(){
     NewCustomerDialog dialog;
     if(dialog.exec()){
-        qDebug()<<"Apertou OK";
+        QSqlTableModel customer_table_model;
+        customer_table_model.setEditStrategy(QSqlTableModel::OnManualSubmit);
+        customer_table_model.setTable("address");
+        QSqlRecord new_record;
+        //Adds data from form to Record
+        new_record.setValue("address",dialog.ui->address_lineEdit_5->text());
+        new_record.setValue("zip_code",dialog.ui->zip_code_lineEdit_6->text());
+        new_record.setValue("city",dialog.ui->city_lineEdit_7->text());
+        new_record.setValue("state",dialog.ui->state_comboBox->currentText());
+        //Test
+        new_record.setValue("address","asdfasdf");
+        new_record.setValue("zip_code","asdfdf");
+        new_record.setValue("city","asdfsdaf");
+        new_record.setValue("state","IN");
+        //Adds record to model
+        customer_table_model.insertRecord(1,new_record);
+        //Aplies the change to table
+        if(!customer_table_model.submitAll()){
+            qDebug()<<customer_table_model.lastError();
+        }
         return;
     }
-    qDebug()<<"Não apertou OK";
 }
 void MainWindow::make_connections(){
     QObject::connect(this->ui->action_create_Customers,SIGNAL(triggered()),this,SLOT(showCreateCustomerDialog()));
