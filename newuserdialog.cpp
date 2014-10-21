@@ -13,4 +13,5 @@ NewUserDialog::NewUserDialog(QWidget *parent) :
 NewUserDialog::~NewUserDialog()
 {
     delete ui;
+    //
 }

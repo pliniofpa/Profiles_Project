@@ -28,6 +28,10 @@ MainWindow::MainWindow(QWidget *parent) :
     this->time_format = "hh:mm AP";
     this->create_daily_appt();
     this->make_connections();
+    //Set the date int the daily appointments date to current date
+    this->ui->daily_appt_date_dateEdit->setDate(QDate::currentDate());
+    //Set the interval of data from current date to 6 months from current date
+    this->ui->daily_appt_date_dateEdit->setDateRange(QDate::currentDate(),QDate::currentDate().addMonths(6));
 }
 
 MainWindow::~MainWindow()
