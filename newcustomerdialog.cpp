@@ -6,7 +6,7 @@ NewCustomerDialog::NewCustomerDialog(QWidget *parent) :
     ui(new Ui::NewCustomerDialog)
 {
     ui->setupUi(this);
-    //Removes "What's it button"
+    //Removes "What's it?" button
     this->setWindowFlags(Qt::Dialog | Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint);
 }
 

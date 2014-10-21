@@ -1,16 +1,16 @@
-#include "newstylistdialog.h"
-#include "ui_newstylistdialog.h"
+#include "newappointmentdialog.h"
+#include "ui_newappointmentdialog.h"
 
-NewStylistDialog::NewStylistDialog(QWidget *parent) :
+NewAppointmentDialog::NewAppointmentDialog(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::NewStylistDialog)
+    ui(new Ui::NewAppointmentDialog)
 {
     ui->setupUi(this);
     //Removes "What's it?" button
     this->setWindowFlags(Qt::Dialog | Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint);
 }
 
-NewStylistDialog::~NewStylistDialog()
+NewAppointmentDialog::~NewAppointmentDialog()
 {
     delete ui;
 }

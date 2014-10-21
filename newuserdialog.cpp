@@ -1,16 +1,16 @@
-#include "newstylistdialog.h"
-#include "ui_newstylistdialog.h"
+#include "newuserdialog.h"
+#include "ui_newuserdialog.h"
 
-NewStylistDialog::NewStylistDialog(QWidget *parent) :
+NewUserDialog::NewUserDialog(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::NewStylistDialog)
+    ui(new Ui::NewUserDialog)
 {
     ui->setupUi(this);
     //Removes "What's it?" button
     this->setWindowFlags(Qt::Dialog | Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint);
 }
 
-NewStylistDialog::~NewStylistDialog()
+NewUserDialog::~NewUserDialog()
 {
     delete ui;
 }

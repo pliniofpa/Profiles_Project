@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QPushButton>
 class QTime;
+class QSqlTableModel;
 namespace Ui {
 class MainWindow;
 }
@@ -18,6 +19,9 @@ public:
 private slots:
     void showCreateCustomerDialog();
     void showCreateStylistDialog();
+    void showCreateServiceDialog();
+    void showCreateAppointmentDialog();
+    void showCreateUserDialog();
 
 private:
     Ui::MainWindow *ui;

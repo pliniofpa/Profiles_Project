@@ -32,7 +32,7 @@
           </property>
          </widget>
         </item>
-        <item alignment="Qt::AlignRight">
+        <item>
          <widget class="QLineEdit" name="name_lineEdit"/>
         </item>
        </layout>
@@ -83,7 +83,7 @@
           </property>
          </widget>
         </item>
-        <item alignment="Qt::AlignRight">
+        <item>
          <widget class="QLineEdit" name="email_lineEdit_4"/>
         </item>
        </layout>
@@ -126,7 +126,7 @@
           </property>
          </widget>
         </item>
-        <item alignment="Qt::AlignRight">
+        <item>
          <widget class="QLineEdit" name="address_lineEdit_5"/>
         </item>
        </layout>

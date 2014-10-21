@@ -11,14 +11,18 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Tech Scheduler - Profiles Hair Salon</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="resources.qrc">
+    <normaloff>:/images/images/oie_bA9mf2KKSkOm.png</normaloff>:/images/images/oie_bA9mf2KKSkOm.png</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout_2">
     <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="daily_appointments_tab">
        <attribute name="title">
@@ -60,16 +64,23 @@
     <property name="title">
      <string>Edit</string>
     </property>
+    <addaction name="actionCustomers"/>
+    <addaction name="actionStylists"/>
+    <addaction name="actionServices"/>
+    <addaction name="actionUsers"/>
    </widget>
    <widget class="QMenu" name="menuReports">
     <property name="title">
      <string>Reports</string>
     </property>
+    <addaction name="actionAppointments_Stylist"/>
+    <addaction name="actionAppointments_Period"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
      <string>Help</string>
     </property>
+    <addaction name="actionAbout_Tech_Scheduler"/>
    </widget>
    <widget class="QMenu" name="menuCreate">
     <property name="title">
@@ -77,6 +88,9 @@
     </property>
     <addaction name="action_create_Customer"/>
     <addaction name="action_create_Stylist"/>
+    <addaction name="action_create_Service"/>
+    <addaction name="action_create_Appointment"/>
+    <addaction name="action_create_User"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -145,7 +159,7 @@
   <action name="actionAdd_Break">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/images/images/1413782606_Person_CoffeeBreak_Male_Dark.png</normaloff>:/images/images/1413782606_Person_CoffeeBreak_Male_Dark.png</iconset>
+     <normaloff>:/images/images/1413782209_coffee.png</normaloff>:/images/images/1413782209_coffee.png</iconset>
    </property>
    <property name="text">
     <string>Add Break</string>
@@ -162,6 +176,56 @@
   <action name="action_create_Stylist">
    <property name="text">
     <string>Stylist</string>
+   </property>
+  </action>
+  <action name="action_create_Service">
+   <property name="text">
+    <string>Service</string>
+   </property>
+  </action>
+  <action name="action_create_Appointment">
+   <property name="text">
+    <string>Appointment</string>
+   </property>
+  </action>
+  <action name="action_create_User">
+   <property name="text">
+    <string>User</string>
+   </property>
+  </action>
+  <action name="actionAbout_Tech_Scheduler">
+   <property name="text">
+    <string>About Tech Scheduler</string>
+   </property>
+  </action>
+  <action name="actionCustomers">
+   <property name="text">
+    <string>Customers</string>
+   </property>
+  </action>
+  <action name="actionStylists">
+   <property name="text">
+    <string>Stylists</string>
+   </property>
+  </action>
+  <action name="actionServices">
+   <property name="text">
+    <string>Services</string>
+   </property>
+  </action>
+  <action name="actionUsers">
+   <property name="text">
+    <string>Users</string>
+   </property>
+  </action>
+  <action name="actionAppointments_Stylist">
+   <property name="text">
+    <string>Appointments / Stylist</string>
+   </property>
+  </action>
+  <action name="actionAppointments_Period">
+   <property name="text">
+    <string>Appointments / Period</string>
    </property>
   </action>
  </widget>

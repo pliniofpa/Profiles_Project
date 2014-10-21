@@ -6,83 +6,177 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>376</width>
-    <height>321</height>
+    <width>372</width>
+    <height>413</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Create New Stylist</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
+  <layout class="QVBoxLayout" name="verticalLayout_3">
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item alignment="Qt::AlignLeft">
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>Name:</string>
-       </property>
-      </widget>
-     </item>
-     <item alignment="Qt::AlignRight">
-      <widget class="QLineEdit" name="name_lineEdit"/>
-     </item>
-    </layout>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>Personal Info</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item alignment="Qt::AlignLeft">
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>Name:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="name_lineEdit"/>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item alignment="Qt::AlignLeft">
+         <widget class="QLabel" name="label_2">
+          <property name="text">
+           <string>Nickname:</string>
+          </property>
+         </widget>
+        </item>
+        <item alignment="Qt::AlignRight">
+         <widget class="QLineEdit" name="nickname_lineEdit_2"/>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_4">
+        <item alignment="Qt::AlignLeft">
+         <widget class="QLabel" name="label_4">
+          <property name="text">
+           <string>Phone 1:</string>
+          </property>
+         </widget>
+        </item>
+        <item alignment="Qt::AlignRight">
+         <widget class="QLineEdit" name="phone1_lineEdit_4"/>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_5">
+        <item alignment="Qt::AlignLeft">
+         <widget class="QLabel" name="label_5">
+          <property name="text">
+           <string>Phone 2:</string>
+          </property>
+         </widget>
+        </item>
+        <item alignment="Qt::AlignRight">
+         <widget class="QLineEdit" name="phone2_lineEdit_5"/>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <item alignment="Qt::AlignLeft">
+         <widget class="QLabel" name="label_3">
+          <property name="text">
+           <string>Email:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="email_lineEdit_3"/>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <item alignment="Qt::AlignLeft">
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>Nickname:</string>
-       </property>
-      </widget>
-     </item>
-     <item alignment="Qt::AlignRight">
-      <widget class="QLineEdit" name="nickname_lineEdit_2"/>
-     </item>
-    </layout>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_4">
-     <item alignment="Qt::AlignLeft">
-      <widget class="QLabel" name="label_4">
-       <property name="text">
-        <string>Phone 1:</string>
-       </property>
-      </widget>
-     </item>
-     <item alignment="Qt::AlignRight">
-      <widget class="QLineEdit" name="phone1_lineEdit_4"/>
-     </item>
-    </layout>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_3">
-     <item alignment="Qt::AlignLeft">
-      <widget class="QLabel" name="label_3">
-       <property name="text">
-        <string>Email:</string>
-       </property>
-      </widget>
-     </item>
-     <item alignment="Qt::AlignRight">
-      <widget class="QLineEdit" name="email_lineEdit_3"/>
-     </item>
-    </layout>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_5">
-     <item alignment="Qt::AlignLeft">
-      <widget class="QLabel" name="label_5">
-       <property name="text">
-        <string>Phone 2:</string>
-       </property>
-      </widget>
-     </item>
-     <item alignment="Qt::AlignRight">
-      <widget class="QLineEdit" name="phone2_lineEdit_5"/>
-     </item>
-    </layout>
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="title">
+      <string>Address Info</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_6">
+        <item>
+         <widget class="QLabel" name="label_6">
+          <property name="text">
+           <string>Zip-Code:</string>
+          </property>
+          <property name="buddy">
+           <cstring>zip_code_lineEdit_6</cstring>
+          </property>
+         </widget>
+        </item>
+        <item alignment="Qt::AlignRight">
+         <widget class="QLineEdit" name="zip_code_lineEdit_6"/>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_7">
+        <item>
+         <widget class="QLabel" name="label_7">
+          <property name="text">
+           <string>Address:</string>
+          </property>
+          <property name="buddy">
+           <cstring>address_lineEdit_5</cstring>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="address_lineEdit_5"/>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_9">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_8">
+          <item alignment="Qt::AlignLeft">
+           <widget class="QLabel" name="label_8">
+            <property name="text">
+             <string>City:</string>
+            </property>
+            <property name="buddy">
+             <cstring>city_lineEdit_7</cstring>
+            </property>
+           </widget>
+          </item>
+          <item alignment="Qt::AlignRight">
+           <widget class="QLineEdit" name="city_lineEdit_7">
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_10">
+          <item alignment="Qt::AlignLeft">
+           <widget class="QLabel" name="label_9">
+            <property name="text">
+             <string>State:</string>
+            </property>
+            <property name="buddy">
+             <cstring>state_comboBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item alignment="Qt::AlignRight">
+           <widget class="QComboBox" name="state_comboBox"/>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">

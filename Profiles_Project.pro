@@ -12,20 +12,41 @@ TARGET = Profiles_Project
 TEMPLATE = app
 
 QMAKE_MAC_SDK=macosx10.9
+ICON = app.icns
+
+win32:RC_FILE = resources.rc
 
 SOURCES += main.cpp\
         mainwindow.cpp \
     newcustomerdialog.cpp \
-    newstylistdialog.cpp
+    newstylistdialog.cpp \
+    mydatamodel.cpp \
+    newrecorddialog.cpp \
+    newservicedialog.cpp \
+    newappointmentdialog.cpp \
+    newuserdialog.cpp
 
 HEADERS  += mainwindow.h \
     newcustomerdialog.h \
     connection.h \
-    newstylistdialog.h
+    newstylistdialog.h \
+    mydatamodel.h \
+    newrecorddialog.h \
+    newservicedialog.h \
+    newappointmentdialog.h \
+    newuserdialog.h \
+    version.h
 
 FORMS    += mainwindow.ui \
     newcustomerdialog.ui \
-    newstylistdialog.ui
+    newstylistdialog.ui \
+    newrecorddialog.ui \
+    newservicedialog.ui \
+    newappointmentdialog.ui \
+    newuserdialog.ui
 
 RESOURCES += \
     resources.qrc
+
+OTHER_FILES += \
+    resources.rc
