@@ -22,7 +22,7 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="daily_appt_tab">
        <attribute name="title">
@@ -45,6 +45,51 @@
        <attribute name="title">
         <string>Employee Day</string>
        </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item alignment="Qt::AlignLeft">
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>Stylist:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="stylist_comboBox">
+            <property name="minimumSize">
+             <size>
+              <width>200</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="editable">
+             <bool>true</bool>
+            </property>
+            <property name="maxVisibleItems">
+             <number>20</number>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QTableWidget" name="employee_day_tableWidget"/>
+        </item>
+       </layout>
       </widget>
      </widget>
     </item>
@@ -68,17 +113,17 @@
     <property name="title">
      <string>Edit</string>
     </property>
-    <addaction name="actionCustomers"/>
-    <addaction name="actionStylists"/>
-    <addaction name="actionServices"/>
-    <addaction name="actionUsers"/>
+    <addaction name="action_edit_Customers"/>
+    <addaction name="action_edit_Stylists"/>
+    <addaction name="action_edit_Services"/>
+    <addaction name="action_edit_Users"/>
    </widget>
    <widget class="QMenu" name="menuReports">
     <property name="title">
      <string>Reports</string>
     </property>
-    <addaction name="actionAppointments_Stylist"/>
-    <addaction name="actionAppointments_Period"/>
+    <addaction name="action_report_Appointments_Stylist"/>
+    <addaction name="action_report_Appointments_Period"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -202,32 +247,32 @@
     <string>About Tech Scheduler</string>
    </property>
   </action>
-  <action name="actionCustomers">
+  <action name="action_edit_Customers">
    <property name="text">
     <string>Customers</string>
    </property>
   </action>
-  <action name="actionStylists">
+  <action name="action_edit_Stylists">
    <property name="text">
     <string>Stylists</string>
    </property>
   </action>
-  <action name="actionServices">
+  <action name="action_edit_Services">
    <property name="text">
     <string>Services</string>
    </property>
   </action>
-  <action name="actionUsers">
+  <action name="action_edit_Users">
    <property name="text">
     <string>Users</string>
    </property>
   </action>
-  <action name="actionAppointments_Stylist">
+  <action name="action_report_Appointments_Stylist">
    <property name="text">
     <string>Appointments / Stylist</string>
    </property>
   </action>
-  <action name="actionAppointments_Period">
+  <action name="action_report_Appointments_Period">
    <property name="text">
     <string>Appointments / Period</string>
    </property>

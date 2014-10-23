@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>372</width>
-    <height>413</height>
+    <width>369</width>
+    <height>456</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -30,7 +30,11 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="name_lineEdit"/>
+         <widget class="QLineEdit" name="name_lineEdit">
+          <property name="clearButtonEnabled">
+           <bool>true</bool>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
@@ -44,7 +48,11 @@
          </widget>
         </item>
         <item alignment="Qt::AlignRight">
-         <widget class="QLineEdit" name="nickname_lineEdit_2"/>
+         <widget class="QLineEdit" name="nickname_lineEdit_2">
+          <property name="clearButtonEnabled">
+           <bool>true</bool>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
@@ -58,7 +66,14 @@
          </widget>
         </item>
         <item alignment="Qt::AlignRight">
-         <widget class="QLineEdit" name="phone1_lineEdit_4"/>
+         <widget class="QLineEdit" name="phone1_lineEdit_4">
+          <property name="inputMask">
+           <string>999-999-9999</string>
+          </property>
+          <property name="clearButtonEnabled">
+           <bool>true</bool>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
@@ -72,7 +87,14 @@
          </widget>
         </item>
         <item alignment="Qt::AlignRight">
-         <widget class="QLineEdit" name="phone2_lineEdit_5"/>
+         <widget class="QLineEdit" name="phone2_lineEdit_5">
+          <property name="inputMask">
+           <string>999-999-9999</string>
+          </property>
+          <property name="clearButtonEnabled">
+           <bool>true</bool>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
@@ -86,7 +108,32 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="email_lineEdit_3"/>
+         <widget class="QLineEdit" name="email_lineEdit_3">
+          <property name="clearButtonEnabled">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_11">
+        <item alignment="Qt::AlignLeft">
+         <widget class="QLabel" name="label_10">
+          <property name="text">
+           <string>Birthday:</string>
+          </property>
+          <property name="buddy">
+           <cstring>email_lineEdit_4</cstring>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QDateEdit" name="birthday_dateEdit">
+          <property name="calendarPopup">
+           <bool>true</bool>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
@@ -112,7 +159,14 @@
          </widget>
         </item>
         <item alignment="Qt::AlignRight">
-         <widget class="QLineEdit" name="zip_code_lineEdit_6"/>
+         <widget class="QLineEdit" name="zip_code_lineEdit_6">
+          <property name="inputMask">
+           <string>99999</string>
+          </property>
+          <property name="clearButtonEnabled">
+           <bool>true</bool>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
@@ -129,7 +183,11 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="address_lineEdit_5"/>
+         <widget class="QLineEdit" name="address_lineEdit_5">
+          <property name="clearButtonEnabled">
+           <bool>true</bool>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
@@ -151,6 +209,9 @@
            <widget class="QLineEdit" name="city_lineEdit_7">
             <property name="text">
              <string/>
+            </property>
+            <property name="clearButtonEnabled">
+             <bool>true</bool>
             </property>
            </widget>
           </item>

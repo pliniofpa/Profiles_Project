@@ -32,7 +32,7 @@ void MyDataModel::setValue(QString field, QVariant value){
     */
     this->record->setValue(field,value);
 }
-bool MyDataModel::submitAll(){
+int MyDataModel::submitAll(){
     /*
     QSqlRecord record;
     for(int i=0;i<this->fields.length();++i){
@@ -42,11 +42,12 @@ bool MyDataModel::submitAll(){
     */
     if(!this->table_model->insertRecord(-1,*this->record)){
         qDebug()<<this->table_model->lastError();
-        return false;
+        return -1;
     }
     if(!this->table_model->submitAll()){
         qDebug()<<this->table_model->lastError();
-        return false;
+        return -1;
     }
-    return true;
+    int row=this->table_model->rowCount();
+    return (this->table_model->record(row-1).value("id")).toInt();
 }

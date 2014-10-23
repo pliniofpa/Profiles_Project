@@ -50,6 +50,9 @@
             <height>0</height>
            </size>
           </property>
+          <property name="maxVisibleItems">
+           <number>20</number>
+          </property>
          </widget>
         </item>
         <item alignment="Qt::AlignRight">
@@ -97,6 +100,9 @@
             <height>0</height>
            </size>
           </property>
+          <property name="maxVisibleItems">
+           <number>20</number>
+          </property>
          </widget>
         </item>
         <item alignment="Qt::AlignRight">
@@ -143,6 +149,12 @@
             <width>180</width>
             <height>0</height>
            </size>
+          </property>
+          <property name="editable">
+           <bool>true</bool>
+          </property>
+          <property name="maxVisibleItems">
+           <number>20</number>
           </property>
          </widget>
         </item>
@@ -204,9 +216,6 @@
         </item>
         <item alignment="Qt::AlignRight">
          <widget class="QSpinBox" name="spinBox">
-          <property name="readOnly">
-           <bool>true</bool>
-          </property>
           <property name="maximum">
            <number>180</number>
           </property>

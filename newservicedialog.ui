@@ -24,7 +24,11 @@
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="name_lineEdit_2"/>
+      <widget class="QLineEdit" name="name_lineEdit_2">
+       <property name="clearButtonEnabled">
+        <bool>true</bool>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
@@ -38,7 +42,14 @@
       </widget>
      </item>
      <item alignment="Qt::AlignRight">
-      <widget class="QLineEdit" name="price_lineEdit_3"/>
+      <widget class="QLineEdit" name="price_lineEdit_3">
+       <property name="inputMask">
+        <string>$999.99</string>
+       </property>
+       <property name="clearButtonEnabled">
+        <bool>true</bool>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>

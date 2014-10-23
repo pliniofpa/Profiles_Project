@@ -24,7 +24,8 @@ SOURCES += main.cpp\
     newrecorddialog.cpp \
     newservicedialog.cpp \
     newappointmentdialog.cpp \
-    newuserdialog.cpp
+    newuserdialog.cpp \
+    editcustumerdialog.cpp
 
 HEADERS  += mainwindow.h \
     newcustomerdialog.h \
@@ -35,7 +36,8 @@ HEADERS  += mainwindow.h \
     newservicedialog.h \
     newappointmentdialog.h \
     newuserdialog.h \
-    version.h
+    version.h \
+    editcustumerdialog.h
 
 FORMS    += mainwindow.ui \
     newcustomerdialog.ui \
@@ -43,7 +45,8 @@ FORMS    += mainwindow.ui \
     newrecorddialog.ui \
     newservicedialog.ui \
     newappointmentdialog.ui \
-    newuserdialog.ui
+    newuserdialog.ui \
+    editcustumerdialog.ui
 
 RESOURCES += \
     resources.qrc

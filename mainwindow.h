@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QPushButton>
+#include <QStringList>
 class QTime;
 class QSqlTableModel;
 namespace Ui {
@@ -22,12 +23,15 @@ private slots:
     void showCreateServiceDialog();
     void showCreateAppointmentDialog();
     void showCreateUserDialog();
+    void showEditCustomerDialog();
 
 private:
     Ui::MainWindow *ui;
+    QStringList usa_states;
     QTime *first_time,*last_time;
     int appt_inverval;
     void create_daily_appt();
+    void create_employee_appt();
     QString time_format;
     void make_connections();
 };

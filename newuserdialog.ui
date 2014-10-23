@@ -30,7 +30,11 @@
          </widget>
         </item>
         <item alignment="Qt::AlignRight">
-         <widget class="QLineEdit" name="login_lineEdit"/>
+         <widget class="QLineEdit" name="login_lineEdit">
+          <property name="clearButtonEnabled">
+           <bool>true</bool>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
@@ -44,7 +48,14 @@
          </widget>
         </item>
         <item alignment="Qt::AlignRight">
-         <widget class="QLineEdit" name="password_lineEdit"/>
+         <widget class="QLineEdit" name="password_lineEdit">
+          <property name="echoMode">
+           <enum>QLineEdit::Password</enum>
+          </property>
+          <property name="clearButtonEnabled">
+           <bool>true</bool>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
@@ -58,7 +69,11 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="email_lineEdit"/>
+         <widget class="QLineEdit" name="email_lineEdit">
+          <property name="clearButtonEnabled">
+           <bool>true</bool>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>

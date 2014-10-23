@@ -19,6 +19,8 @@ public:
 
 private:
     Ui::NewCustomerDialog *ui;
+private slots:
+    void validateEmail(QString text);
 };
 
 #endif // NEWCUSTOMERDIALOG_H

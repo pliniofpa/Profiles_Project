@@ -13,7 +13,7 @@ class MyDataModel : public QObject
 public:
     explicit MyDataModel(QString tablename, QSqlDatabase *db = 0, QObject *parent = 0);
     void setValue(QString field, QVariant value);
-    bool submitAll();
+    int submitAll();
 private:
     QSqlTableModel *table_model;
     QList<QString> fields;
