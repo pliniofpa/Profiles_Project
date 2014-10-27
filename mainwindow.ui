@@ -22,11 +22,11 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="daily_appt_tab">
        <attribute name="title">
-        <string>Daily Appointments</string>
+        <string>Salon Day</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout">
         <item row="1" column="1">
@@ -184,7 +184,7 @@
   <action name="actionEdit_Record">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/images/images/1413781114_Edit.png</normaloff>:/images/images/1413781114_Edit.png</iconset>
+     <normaloff>:/images/images/pencil3.png</normaloff>:/images/images/pencil3.png</iconset>
    </property>
    <property name="text">
     <string>Edit Record</string>

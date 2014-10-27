@@ -15,6 +15,9 @@ class EditCustumerDialog : public QDialog
 public:
     explicit EditCustumerDialog(QWidget *parent = 0);
     ~EditCustumerDialog();
+private slots:
+    void beginEditing();
+    void endEditing();
 
 private:
     Ui::EditCustumerDialog *ui;
