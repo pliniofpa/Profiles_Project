@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QPushButton>
 #include <QStringList>
+#include "globalconfig.h"
 class QTime;
 class QSqlTableModel;
 namespace Ui {
@@ -26,13 +27,12 @@ private slots:
     void showEditCustomerDialog();
 
 private:
+    GlobalConfig global_config;
     Ui::MainWindow *ui;
-    QStringList usa_states;
     QTime *first_time,*last_time;
     int appt_inverval;
     void create_daily_appt();
-    void create_employee_appt();
-    QString time_format;
+    void create_employee_appt();    
     void make_connections();
 };
 

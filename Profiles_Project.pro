@@ -25,7 +25,8 @@ SOURCES += main.cpp\
     newservicedialog.cpp \
     newappointmentdialog.cpp \
     newuserdialog.cpp \
-    editcustumerdialog.cpp
+    editcustumerdialog.cpp \
+    globalconfig.cpp
 
 HEADERS  += mainwindow.h \
     newcustomerdialog.h \
@@ -37,7 +38,8 @@ HEADERS  += mainwindow.h \
     newappointmentdialog.h \
     newuserdialog.h \
     version.h \
-    editcustumerdialog.h
+    editcustumerdialog.h \
+    globalconfig.h
 
 FORMS    += mainwindow.ui \
     newcustomerdialog.ui \

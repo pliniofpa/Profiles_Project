@@ -20,7 +20,7 @@
 #include <QRegExp>
 #include <QRegExpValidator>
 #include <QSqlTableModel>
-
+struct GlobalConfig;
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -29,7 +29,6 @@ MainWindow::MainWindow(QWidget *parent) :
     this->first_time = new QTime(7,0,0);
     this->last_time = new QTime(23,0,0);
     this->appt_inverval = 15;
-    this->time_format = "hh:mm AP";
     this->create_daily_appt();
     this->create_employee_appt();
     this->make_connections();
@@ -37,9 +36,7 @@ MainWindow::MainWindow(QWidget *parent) :
     this->ui->daily_appt_date_dateEdit->setDate(QDate::currentDate());
     //Set the interval of data from current date to 6 months from current date
     this->ui->daily_appt_date_dateEdit->setDateRange(QDate::currentDate(),QDate::currentDate().addMonths(6));
-    //Sets USA States List
-    this->usa_states<<QString("IN,AL,AK,AZ,AR,CA,CO,CT,DE,FL,GA,HI,ID,IL,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY").split(",");
-}
+    }
 
 MainWindow::~MainWindow()
 {
@@ -54,7 +51,7 @@ void MainWindow::create_daily_appt(){
         //Adds one line in the table
         curTable->setRowCount(curTable->rowCount()+1);
         //Creates a new item for vertical header
-        vertical_headers_labels << (curTime.toString(this->time_format));
+        vertical_headers_labels << (curTime.toString(global_config.time_format));
         //curTable->setVerticalHeaderItem((curTable->rowCount()-1),curItem);
         curTime = curTime.addSecs(this->appt_inverval*60);
     }while(curTime <= (*this->last_time));
@@ -79,7 +76,7 @@ void MainWindow::create_employee_appt(){
     curTable->setRowCount(per_column_dates);
     for(int i=0;curTime <= (*this->last_time);++i){
         curTable->setColumnCount(2+((int)(i/per_column_dates))*2);
-        curTable->setItem(i%per_column_dates,(int)(i/per_column_dates)*2,new QTableWidgetItem(curTime.toString(this->time_format)));
+        curTable->setItem(i%per_column_dates,(int)(i/per_column_dates)*2,new QTableWidgetItem(curTime.toString(global_config.time_format)));
         curTime = curTime.addSecs(this->appt_inverval*60);
     }
     /*
@@ -87,7 +84,7 @@ void MainWindow::create_employee_appt(){
         //Adds one line in the table
         curTable->setRowCount(curTable->rowCount()+1);
         //Creates a new item for vertical header
-        vertical_headers_labels << (curTime.toString(this->time_format));
+        vertical_headers_labels << (curTime.toString(GlobalConfig.time_format));
         //curTable->setVerticalHeaderItem((curTable->rowCount()-1),curItem);
         curTime = curTime.addSecs(this->appt_inverval*60);
     }while(curTime <= (*this->last_time));
@@ -98,7 +95,7 @@ void MainWindow::create_employee_appt(){
 void MainWindow::showCreateCustomerDialog(){
     NewCustomerDialog dialog(this);
     //Set USA states list to State Combobox and City
-    dialog.ui->state_comboBox->addItems(this->usa_states);
+    dialog.ui->state_comboBox->addItems(global_config.usa_states);
     dialog.ui->city_lineEdit_7->setText("Fort Wayne");
     if(dialog.exec()){
         MyDataModel address_model("address");
@@ -124,7 +121,7 @@ void MainWindow::showCreateCustomerDialog(){
 void MainWindow::showCreateStylistDialog(){
     NewStylistDialog dialog(this);
     //Set USA states list to State Combobox and City
-    dialog.ui->state_comboBox->addItems(this->usa_states);
+    dialog.ui->state_comboBox->addItems(global_config.usa_states);
     dialog.ui->city_lineEdit_7->setText("Fort Wayne");
     if(dialog.exec()){
 
