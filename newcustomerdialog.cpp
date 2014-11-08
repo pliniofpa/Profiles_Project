@@ -22,11 +22,12 @@ NewCustomerDialog::~NewCustomerDialog()
     delete ui;
 }
 void NewCustomerDialog::validateEmail(QString text){
-    int pos=0;
-    QRegExpValidator email_validator(QRegExp("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,6}$"),this);
-    if(email_validator.validate(text,pos)!=QValidator::Acceptable){
-        this->ui->email_lineEdit_4->setStyleSheet("color: red");
+    QString strPatt = "\\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}\\b";
+    QRegExp rx(strPatt);
+    qDebug()<<rx.matchedLength();
+    if(rx.exactMatch(text)){
+        this->ui->email_lineEdit_4->setStyleSheet("color: green");
     }else{
-        this->ui->email_lineEdit_4->setStyleSheet("");
+        this->ui->email_lineEdit_4->setStyleSheet("color: red");
     }
 }

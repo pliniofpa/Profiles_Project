@@ -17,9 +17,11 @@
 #include "newuserdialog.h"
 #include "ui_newuserdialog.h"
 #include "editcustumerdialog.h"
+#include "editstylistdialog.h"
 #include <QRegExp>
 #include <QRegExpValidator>
 #include <QSqlTableModel>
+#include <QColorDialog>
 struct GlobalConfig;
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -36,7 +38,9 @@ MainWindow::MainWindow(QWidget *parent) :
     this->ui->daily_appt_date_dateEdit->setDate(QDate::currentDate());
     //Set the interval of data from current date to 6 months from current date
     this->ui->daily_appt_date_dateEdit->setDateRange(QDate::currentDate(),QDate::currentDate().addMonths(6));
-    }
+    QColorDialog teste(this);
+    teste.exec();
+}
 
 MainWindow::~MainWindow()
 {
@@ -98,24 +102,20 @@ void MainWindow::showCreateCustomerDialog(){
     dialog.ui->state_comboBox->addItems(global_config.usa_states);
     dialog.ui->city_lineEdit_7->setText("Fort Wayne");
     if(dialog.exec()){
-        MyDataModel address_model("address");
-        address_model.setValue("address",dialog.ui->address_lineEdit_5->text());
-        address_model.setValue("zip_code",dialog.ui->zip_code_lineEdit_6->text());
-        address_model.setValue("state",dialog.ui->state_comboBox->currentText());
-        address_model.setValue("city",dialog.ui->city_lineEdit_7->text());
-        int address_id= address_model.submitAll();
-        if(address_id>0){
-            qDebug()<<QString("2. Address Saved. ID: %1").arg(address_id);
-            MyDataModel customer_model("customer");
-            customer_model.setValue("name",dialog.ui->name_lineEdit->text());
-            customer_model.setValue("birthday",dialog.ui->birthday_dateEdit->date());
-            customer_model.setValue("address_id",address_id);
-            customer_model.setValue("email",dialog.ui->email_lineEdit_4->text());
-            customer_model.setValue("phone1",dialog.ui->phone1_lineEdit_2->text());
-            customer_model.setValue("phone2",dialog.ui->phone2_lineEdit_3->text());
-            customer_model.submitAll();
+        MyDataModel customer_model("customer");
+        customer_model.setValue("name",dialog.ui->name_lineEdit->text());
+        customer_model.setValue("birthday",dialog.ui->birthday_dateEdit->date());
+        customer_model.setValue("email",dialog.ui->email_lineEdit_4->text());
+        customer_model.setValue("phone1",dialog.ui->phone1_lineEdit_2->text());
+        customer_model.setValue("phone2",dialog.ui->phone2_lineEdit_3->text());
+        customer_model.setValue("address",dialog.ui->address_lineEdit_5->text());
+        customer_model.setValue("zip_code",dialog.ui->zip_code_lineEdit_6->text());
+        customer_model.setValue("state",dialog.ui->state_comboBox->currentText());
+        customer_model.setValue("city",dialog.ui->city_lineEdit_7->text());
+        int customer_id = customer_model.submitAll();
+        if(customer_id>0){
+            qDebug()<<QString("Customer Saved. ID: %1").arg(customer_id);
         }
-        return;
     }
 }
 void MainWindow::showCreateStylistDialog(){
@@ -124,24 +124,20 @@ void MainWindow::showCreateStylistDialog(){
     dialog.ui->state_comboBox->addItems(global_config.usa_states);
     dialog.ui->city_lineEdit_7->setText("Fort Wayne");
     if(dialog.exec()){
-
-        MyDataModel address_model("address");
-        address_model.setValue("address",dialog.ui->address_lineEdit_5->text());
-        address_model.setValue("zip_code",dialog.ui->zip_code_lineEdit_6->text());
-        address_model.setValue("state",dialog.ui->state_comboBox->currentText());
-        address_model.setValue("city",dialog.ui->city_lineEdit_7->text());
-        int address_id= address_model.submitAll();
-        if(address_id>0){
-            MyDataModel stylist_model("stylist");
-            stylist_model.setValue("address_id",address_id);
-            stylist_model.setValue("name",dialog.ui->name_lineEdit->text());
-            stylist_model.setValue("nickname",dialog.ui->nickname_lineEdit_2->text());
-            stylist_model.setValue("phone1",dialog.ui->phone1_lineEdit_4->text());
-            stylist_model.setValue("phone2",dialog.ui->phone2_lineEdit_5->text());
-            stylist_model.setValue("email",dialog.ui->email_lineEdit_3->text());
-            stylist_model.setValue("birthday",dialog.ui->birthday_dateEdit->date());
-            stylist_model.submitAll();
-            return;
+        MyDataModel stylist_model("stylist");
+        stylist_model.setValue("name",dialog.ui->name_lineEdit->text());
+        stylist_model.setValue("nickname",dialog.ui->nickname_lineEdit_2->text());
+        stylist_model.setValue("phone1",dialog.ui->phone1_lineEdit_4->text());
+        stylist_model.setValue("phone2",dialog.ui->phone2_lineEdit_5->text());
+        stylist_model.setValue("email",dialog.ui->email_lineEdit_3->text());
+        stylist_model.setValue("birthday",dialog.ui->birthday_dateEdit->date());
+        stylist_model.setValue("address",dialog.ui->address_lineEdit_5->text());
+        stylist_model.setValue("zip_code",dialog.ui->zip_code_lineEdit_6->text());
+        stylist_model.setValue("state",dialog.ui->state_comboBox->currentText());
+        stylist_model.setValue("city",dialog.ui->city_lineEdit_7->text());
+        int stylist_id = stylist_model.submitAll();
+        if(stylist_id>0){
+            qDebug()<<QString("Stylist Saved. ID: %1").arg(stylist_id);
         }
         return;
     }
@@ -191,9 +187,7 @@ void MainWindow::showCreateAppointmentDialog(){
         model.setValue("service_id",dialog.ui->service_comboBox->currentText());
         //MISSING DATETIMES
         //model.setValue("datetime_beginn",dialog.ui->date_dateEdit->);
-        return;
     }
-    return;
 }
 void MainWindow::showCreateUserDialog(){
     NewUserDialog dialog(this);
@@ -202,10 +196,7 @@ void MainWindow::showCreateUserDialog(){
         model.setValue("login",dialog.ui->login_lineEdit->text());
         model.setValue("password",dialog.ui->password_lineEdit->text());
         model.setValue("email",dialog.ui->email_lineEdit->text());
-
-        return;
     }
-    return;
 }
 void MainWindow::make_connections(){
     //Menu Connections
@@ -215,8 +206,13 @@ void MainWindow::make_connections(){
     QObject::connect(this->ui->action_create_Appointment,SIGNAL(triggered()),this,SLOT(showCreateAppointmentDialog()));
     QObject::connect(this->ui->action_create_User,SIGNAL(triggered()),this,SLOT(showCreateUserDialog()));
     QObject::connect(this->ui->action_edit_Customers,SIGNAL(triggered()),this,SLOT(showEditCustomerDialog()));
+    QObject::connect(this->ui->action_edit_Stylists,SIGNAL(triggered()),this,SLOT(showEditStylistDialog()));
 }
 void MainWindow::showEditCustomerDialog(){
     EditCustumerDialog dialog;
+    dialog.exec();
+}
+void MainWindow::showEditStylistDialog(){
+    EditStylistDialog dialog;
     dialog.exec();
 }

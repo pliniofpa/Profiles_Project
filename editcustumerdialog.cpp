@@ -8,6 +8,7 @@
 #include <QDataWidgetMapper>
 #include <QSqlRelationalTableModel>
 #include <QSqlRelationalDelegate>
+#include <QSqlError>
 EditCustumerDialog::EditCustumerDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::EditCustumerDialog)
@@ -30,7 +31,7 @@ EditCustumerDialog::EditCustumerDialog(QWidget *parent) :
     this->ui->address_info_groupBox_2->setEnabled(false);
     //Defines Model Headers
     this->customer_model = new QSqlTableModel();
-    customer_model->setTable("customer_address_view");
+    customer_model->setTable("customer");
     //Define Headers
     customer_model->setHeaderData(customer_model->fieldIndex("id"), Qt::Horizontal, tr("#"));
     customer_model->setHeaderData(customer_model->fieldIndex("name"), Qt::Horizontal, tr("Name"));
@@ -42,14 +43,13 @@ EditCustumerDialog::EditCustumerDialog(QWidget *parent) :
     customer_model->setHeaderData(customer_model->fieldIndex("address"), Qt::Horizontal, tr("Address"));
     customer_model->setHeaderData(customer_model->fieldIndex("state"), Qt::Horizontal, tr("State"));
     customer_model->setHeaderData(customer_model->fieldIndex("city"), Qt::Horizontal, tr("City"));
+    //customer_model->setEditStrategy(QSqlTableModel::OnManualSubmit);
     customer_model->select();
-    //this->ui->customer_tableView->setItemDelegate(new QSqlRelationalDelegate(this->ui->customer_tableView));
     //Sets Model on the Table View
     this->ui->customer_tableView->setModel(this->customer_model);
     //Disables Edit on Table
     this->ui->customer_tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     //Hides some columns on Table View
-    this->ui->customer_tableView->hideColumn(customer_model->fieldIndex("address_id"));
     this->ui->customer_tableView->hideColumn(customer_model->fieldIndex("points"));
     //Resizes the column according to its content
     this->ui->customer_tableView->resizeColumnsToContents();
@@ -66,22 +66,23 @@ EditCustumerDialog::EditCustumerDialog(QWidget *parent) :
     connect(this->ui->search_lineEdit_2,SIGNAL(textEdited(QString)),this,SLOT(searchTextChanged(QString)));
     connect(this->ui->comboBox,SIGNAL(currentTextChanged(QString)),this,SLOT(combobox_text_changed(QString)));
     //Creates Data Mapper
-    mapper = new QDataWidgetMapper;
-    mapper->setModel(this->customer_model);
-    mapper->addMapping(this->ui->id_lineEdit, this->customer_model->fieldIndex("id"));
-    mapper->addMapping(this->ui->name_lineEdit_2, this->customer_model->fieldIndex("name"));
-    mapper->addMapping(this->ui->email_lineEdit_4, this->customer_model->fieldIndex("email"));
-    mapper->addMapping(this->ui->phone1_lineEdit_2, this->customer_model->fieldIndex("phone1"));
-    mapper->addMapping(this->ui->phone2_lineEdit_3, this->customer_model->fieldIndex("phone2"));
-    mapper->addMapping(this->ui->birthday_dateEdit, this->customer_model->fieldIndex("birthday"));
-    mapper->addMapping(this->ui->address_lineEdit_5, this->customer_model->fieldIndex("address"));
-    mapper->addMapping(this->ui->zip_code_lineEdit_6, this->customer_model->fieldIndex("zip_code"));
-    mapper->addMapping(this->ui->state_comboBox, this->customer_model->fieldIndex("State"));
-    mapper->addMapping(this->ui->city_lineEdit_7, this->customer_model->fieldIndex("City"));
-    mapper->setSubmitPolicy(QDataWidgetMapper::ManualSubmit);
-    //mapper->toFirst();
+    customer_mapper = new QDataWidgetMapper;
+    customer_mapper->setModel(this->customer_model);
+    customer_mapper->addMapping(this->ui->id_lineEdit, this->customer_model->fieldIndex("id"));
+    customer_mapper->addMapping(this->ui->name_lineEdit_2, this->customer_model->fieldIndex("name"));
+    customer_mapper->addMapping(this->ui->email_lineEdit_4, this->customer_model->fieldIndex("email"));
+    customer_mapper->addMapping(this->ui->phone1_lineEdit_2, this->customer_model->fieldIndex("phone1"));
+    customer_mapper->addMapping(this->ui->phone2_lineEdit_3, this->customer_model->fieldIndex("phone2"));
+    customer_mapper->addMapping(this->ui->birthday_dateEdit, this->customer_model->fieldIndex("birthday"));
+    customer_mapper->addMapping(this->ui->address_lineEdit_5, this->customer_model->fieldIndex("address"));
+    customer_mapper->addMapping(this->ui->zip_code_lineEdit_6, this->customer_model->fieldIndex("zip_code"));
+    customer_mapper->addMapping(this->ui->state_comboBox, this->customer_model->fieldIndex("state"));
+    customer_mapper->addMapping(this->ui->city_lineEdit_7, this->customer_model->fieldIndex("city"));
+    customer_mapper->setSubmitPolicy(QDataWidgetMapper::ManualSubmit);
+    //customer_mapper->toFirst();
+    //Creates connection for selection of Row on Table
     connect(this->ui->customer_tableView->selectionModel(), SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
-            mapper, SLOT(setCurrentModelIndex(QModelIndex)));
+            customer_mapper, SLOT(setCurrentModelIndex(QModelIndex)));
     //Update ComboBox Text
     this->combobox_text_changed(this->ui->comboBox->currentText());
     connect(this->ui->search_dateEdit,SIGNAL(dateChanged(QDate)),this,SLOT(searchDateChanged(QDate)));
@@ -92,6 +93,7 @@ void EditCustumerDialog::combobox_text_changed(QString text){
     QString other="";
     this->ui->search_lineEdit_2->setVisible(true);
     this->ui->search_dateEdit->setVisible(false);
+    this->searchTextChanged(QString());
     if (text=="#") {
         field = "id";
         this->ui->search_lineEdit_2->setVisible(true);
@@ -137,7 +139,6 @@ void EditCustumerDialog::selectionChanged(const QItemSelection & selected, const
 void EditCustumerDialog::searchTextChanged(QString text){
     if(!text.isEmpty()){
         this->customer_model->setFilter(QString(filter).arg(text));
-        //qDebug()<<this->customer_model->filter();
     }else{
         this->customer_model->setFilter("");
     }
@@ -187,12 +188,16 @@ void EditCustumerDialog::endEditing(){
     this->ui->customers_groupBox_3->setEnabled(true);
     this->ui->search_lineEdit_2->setEnabled(true);
     //Mapper
-    mapper->setCurrentIndex(mapper->currentIndex());
+    customer_mapper->setCurrentIndex(customer_mapper->currentIndex());
 }
 
 void EditCustumerDialog::on_save_pushButton_3_clicked()
 {
-    mapper->submit();
-    this->ui->customer_tableView->resizeColumnsToContents();
-    this->ui->customer_tableView->resizeRowsToContents();
+    if(customer_mapper->submit()){
+        qDebug()<<"Record successfull edited";
+        this->ui->customer_tableView->resizeColumnsToContents();
+        this->ui->customer_tableView->resizeRowsToContents();
+    }else{
+        qDebug()<<"An error occorred while saving table "<<customer_model->lastError().text();
+    }
 }

@@ -1,24 +1,23 @@
-#ifndef EDITCUSTUMERDIALOG_H
-#define EDITCUSTUMERDIALOG_H
+#ifndef EDITSTYLISTDIALOG_H
+#define EDITSTYLISTDIALOG_H
 
 #include <QDialog>
 #include <QItemSelection>
 #include <QDate>
-#include <QModelIndex>
 #include "globalconfig.h"
 class QSqlTableModel;
 class QDataWidgetMapper;
 namespace Ui {
-class EditCustumerDialog;
+class EditStylistDialog;
 }
 
-class EditCustumerDialog : public QDialog
+class EditStylistDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit EditCustumerDialog(QWidget *parent = 0);
-    ~EditCustumerDialog();
+    explicit EditStylistDialog(QWidget *parent = 0);
+    ~EditStylistDialog();
 private slots:
     void beginEditing();
     void endEditing();
@@ -30,11 +29,11 @@ private slots:
 
 private:
     GlobalConfig global_config;
-    QDataWidgetMapper *customer_mapper;
-    Ui::EditCustumerDialog *ui;
-    QSqlTableModel *customer_model;
+    QDataWidgetMapper *stylist_mapper;
+    Ui::EditStylistDialog *ui;
+    QSqlTableModel *stylist_model;
     //Helper variables for Filtering
     QString filter;
 };
 
-#endif // EDITCUSTUMERDIALOG_H
+#endif // EDITSTYLISTDIALOG_H

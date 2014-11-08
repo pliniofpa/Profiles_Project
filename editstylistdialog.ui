@@ -1,83 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>EditCustumerDialog</class>
- <widget class="QDialog" name="EditCustumerDialog">
+ <class>EditStylistDialog</class>
+ <widget class="QDialog" name="EditStylistDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>803</width>
-    <height>717</height>
+    <width>788</width>
+    <height>756</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Edit Custumer</string>
+   <string>Dialog</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_4">
-   <item row="3" column="0" colspan="2">
-    <widget class="QGroupBox" name="customers_groupBox_3">
-     <property name="title">
-      <string>Customers</string>
-     </property>
-     <layout class="QGridLayout" name="gridLayout_3">
-      <item row="0" column="0">
-       <layout class="QHBoxLayout" name="horizontalLayout_13">
-        <item alignment="Qt::AlignLeft">
-         <widget class="QLabel" name="label_11">
-          <property name="text">
-           <string>Search for</string>
-          </property>
-         </widget>
-        </item>
-        <item alignment="Qt::AlignLeft">
-         <widget class="QComboBox" name="comboBox">
-          <property name="minimumSize">
-           <size>
-            <width>150</width>
-            <height>0</height>
-           </size>
-          </property>
-         </widget>
-        </item>
-        <item alignment="Qt::AlignLeft">
-         <widget class="QDateEdit" name="search_dateEdit">
-          <property name="calendarPopup">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="search_lineEdit_2">
-          <property name="minimumSize">
-           <size>
-            <width>300</width>
-            <height>0</height>
-           </size>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <spacer name="horizontalSpacer_3">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-       </layout>
-      </item>
-      <item row="1" column="0">
-       <widget class="QTableView" name="customer_tableView"/>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="1" column="0">
+   <item row="0" column="0">
     <widget class="QGroupBox" name="personal_info_groupBox">
      <property name="title">
       <string>Personal Info</string>
@@ -91,7 +28,7 @@
            <string>Birthday:</string>
           </property>
           <property name="buddy">
-           <cstring>email_lineEdit_4</cstring>
+           <cstring>birthday_dateEdit</cstring>
           </property>
          </widget>
         </item>
@@ -110,6 +47,9 @@
          <widget class="QLabel" name="label">
           <property name="text">
            <string>Name:</string>
+          </property>
+          <property name="buddy">
+           <cstring>name_lineEdit_2</cstring>
           </property>
          </widget>
         </item>
@@ -193,7 +133,10 @@
         <item>
          <widget class="QLabel" name="label_10">
           <property name="text">
-           <string>Customer Number:</string>
+           <string>Stylist Number:</string>
+          </property>
+          <property name="buddy">
+           <cstring>id_lineEdit</cstring>
           </property>
          </widget>
         </item>
@@ -249,10 +192,80 @@
         </item>
        </layout>
       </item>
+      <item row="2" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout_12">
+        <item alignment="Qt::AlignLeft">
+         <widget class="QLabel" name="label_12">
+          <property name="text">
+           <string>Nickname:</string>
+          </property>
+          <property name="buddy">
+           <cstring>nickname_lineEdit_3</cstring>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_4">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="nickname_lineEdit_3"/>
+        </item>
+       </layout>
+      </item>
      </layout>
     </widget>
    </item>
-   <item row="2" column="0">
+   <item row="0" column="1">
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QPushButton" name="edit_pushButton">
+       <property name="text">
+        <string>Edit</string>
+       </property>
+       <property name="icon">
+        <iconset resource="resources.qrc">
+         <normaloff>:/images/images/pencil3.png</normaloff>:/images/images/pencil3.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="cancel_pushButton_2">
+       <property name="text">
+        <string>Cancel</string>
+       </property>
+       <property name="icon">
+        <iconset resource="resources.qrc">
+         <normaloff>:/images/images/1413781093_Delete.png</normaloff>:/images/images/1413781093_Delete.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="save_pushButton_3">
+       <property name="text">
+        <string>Save</string>
+       </property>
+       <property name="icon">
+        <iconset resource="resources.qrc">
+         <normaloff>:/images/images/document_save.png</normaloff>:/images/images/document_save.png</iconset>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="0">
     <widget class="QGroupBox" name="address_info_groupBox_2">
      <property name="title">
       <string>Address Info</string>
@@ -355,44 +368,73 @@
      </layout>
     </widget>
    </item>
-   <item row="1" column="1">
-    <layout class="QVBoxLayout" name="verticalLayout">
-     <item>
-      <widget class="QPushButton" name="edit_pushButton">
-       <property name="text">
-        <string>Edit</string>
-       </property>
-       <property name="icon">
-        <iconset resource="resources.qrc">
-         <normaloff>:/images/images/pencil3.png</normaloff>:/images/images/pencil3.png</iconset>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="cancel_pushButton_2">
-       <property name="text">
-        <string>Cancel</string>
-       </property>
-       <property name="icon">
-        <iconset resource="resources.qrc">
-         <normaloff>:/images/images/1413781093_Delete.png</normaloff>:/images/images/1413781093_Delete.png</iconset>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="save_pushButton_3">
-       <property name="text">
-        <string>Save</string>
-       </property>
-       <property name="icon">
-        <iconset resource="resources.qrc">
-         <normaloff>:/images/images/document_save.png</normaloff>:/images/images/document_save.png</iconset>
-       </property>
-      </widget>
-     </item>
-    </layout>
+   <item row="2" column="0" colspan="2">
+    <widget class="QGroupBox" name="stylists_groupBox_3">
+     <property name="title">
+      <string>Customers</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="0" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout_13">
+        <item alignment="Qt::AlignLeft">
+         <widget class="QLabel" name="label_11">
+          <property name="text">
+           <string>Search for</string>
+          </property>
+          <property name="buddy">
+           <cstring>comboBox</cstring>
+          </property>
+         </widget>
+        </item>
+        <item alignment="Qt::AlignLeft">
+         <widget class="QComboBox" name="comboBox">
+          <property name="minimumSize">
+           <size>
+            <width>150</width>
+            <height>0</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item alignment="Qt::AlignLeft">
+         <widget class="QDateEdit" name="search_dateEdit">
+          <property name="calendarPopup">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="search_lineEdit_2">
+          <property name="minimumSize">
+           <size>
+            <width>300</width>
+            <height>0</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_3">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item row="1" column="0">
+       <widget class="QTableView" name="stylist_tableView"/>
+      </item>
+     </layout>
+    </widget>
    </item>
-   <item row="4" column="0" colspan="2">
+   <item row="3" column="0" colspan="2">
     <widget class="QDialogButtonBox" name="buttonBox_2">
      <property name="standardButtons">
       <set>QDialogButtonBox::Ok</set>
@@ -408,16 +450,16 @@
   <connection>
    <sender>buttonBox_2</sender>
    <signal>accepted()</signal>
-   <receiver>EditCustumerDialog</receiver>
+   <receiver>EditStylistDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>746</x>
-     <y>696</y>
+     <x>769</x>
+     <y>609</y>
     </hint>
     <hint type="destinationlabel">
-     <x>741</x>
-     <y>308</y>
+     <x>775</x>
+     <y>329</y>
     </hint>
    </hints>
   </connection>
