@@ -16,6 +16,9 @@ public:
     explicit NewStylistDialog(QWidget *parent = 0);
     ~NewStylistDialog();
 
+private slots:
+    void on_choose_color_Button_clicked();
+
 private:
     Ui::NewStylistDialog *ui;
 };

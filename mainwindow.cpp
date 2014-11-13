@@ -21,7 +21,6 @@
 #include <QRegExp>
 #include <QRegExpValidator>
 #include <QSqlTableModel>
-#include <QColorDialog>
 struct GlobalConfig;
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -38,8 +37,6 @@ MainWindow::MainWindow(QWidget *parent) :
     this->ui->daily_appt_date_dateEdit->setDate(QDate::currentDate());
     //Set the interval of data from current date to 6 months from current date
     this->ui->daily_appt_date_dateEdit->setDateRange(QDate::currentDate(),QDate::currentDate().addMonths(6));
-    QColorDialog teste(this);
-    teste.exec();
 }
 
 MainWindow::~MainWindow()
@@ -122,7 +119,7 @@ void MainWindow::showCreateStylistDialog(){
     NewStylistDialog dialog(this);
     //Set USA states list to State Combobox and City
     dialog.ui->state_comboBox->addItems(global_config.usa_states);
-    dialog.ui->city_lineEdit_7->setText("Fort Wayne");
+    dialog.ui->city_lineEdit_7->setText("Fort Wayne");    
     if(dialog.exec()){
         MyDataModel stylist_model("stylist");
         stylist_model.setValue("name",dialog.ui->name_lineEdit->text());
@@ -135,6 +132,9 @@ void MainWindow::showCreateStylistDialog(){
         stylist_model.setValue("zip_code",dialog.ui->zip_code_lineEdit_6->text());
         stylist_model.setValue("state",dialog.ui->state_comboBox->currentText());
         stylist_model.setValue("city",dialog.ui->city_lineEdit_7->text());
+        QString stylesheet_string = dialog.ui->color_view_label_12->styleSheet();
+        QString color_string = stylesheet_string.mid(stylesheet_string.indexOf(":")+2,stylesheet_string.length()-stylesheet_string.indexOf(":")-3);
+        stylist_model.setValue("color",color_string);
         int stylist_id = stylist_model.submitAll();
         if(stylist_id>0){
             qDebug()<<QString("Stylist Saved. ID: %1").arg(stylist_id);
