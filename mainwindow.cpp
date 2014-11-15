@@ -21,12 +21,13 @@
 #include <QRegExp>
 #include <QRegExpValidator>
 #include <QSqlTableModel>
+#include "mytableview.h"
 struct GlobalConfig;
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    ui->setupUi(this);
+    ui->setupUi(this);    
     this->first_time = new QTime(7,0,0);
     this->last_time = new QTime(23,0,0);
     this->appt_inverval = 15;

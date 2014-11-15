@@ -27,6 +27,8 @@ private slots:
     void combobox_text_changed(QString text);
     void searchDateChanged(QDate date);
 
+    void on_choose_color_Button_2_clicked();
+
 private:
     GlobalConfig global_config;
     QDataWidgetMapper *stylist_mapper;

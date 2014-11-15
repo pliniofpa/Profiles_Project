@@ -9,6 +9,8 @@
 #include <QSqlRelationalTableModel>
 #include <QSqlRelationalDelegate>
 #include <QSqlError>
+#include <QColorDialog>
+#include <QSqlRecord>
 EditStylistDialog::EditStylistDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::EditStylistDialog)
@@ -16,6 +18,7 @@ EditStylistDialog::EditStylistDialog(QWidget *parent) :
     ui->setupUi(this);
     //Removes "What's it?" button
     this->setWindowFlags(Qt::Dialog | Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint);
+    this->ui->color_value_lineEdit->setVisible(false);
     //Make Connections
     QObject::connect(this->ui->edit_pushButton,SIGNAL(clicked()),this,SLOT(beginEditing()));
     QObject::connect(this->ui->save_pushButton_3,SIGNAL(clicked()),this,SLOT(endEditing()));
@@ -44,10 +47,19 @@ EditStylistDialog::EditStylistDialog(QWidget *parent) :
     stylist_model->setHeaderData(stylist_model->fieldIndex("address"), Qt::Horizontal, tr("Address"));
     stylist_model->setHeaderData(stylist_model->fieldIndex("state"), Qt::Horizontal, tr("State"));
     stylist_model->setHeaderData(stylist_model->fieldIndex("city"), Qt::Horizontal, tr("City"));
+
+    //stylist_model->setHeaderData(stylist_model->fieldIndex("color"), Qt::Horizontal, tr("Color"));
     stylist_model->select();
     //this->ui->stylist_tableView->setItemDelegate(new QSqlRelationalDelegate(this->ui->stylist_tableView));
     //Sets Model on the Table View
     this->ui->stylist_tableView->setModel(stylist_model);
+    //Hides color column
+    this->ui->stylist_tableView->hideColumn(stylist_model->fieldIndex("color"));
+    //Set Color in the color in the color column of stylist_tableView
+    QTableView *curTable = this->ui->stylist_tableView;
+    for(;;){
+    break;
+    }
     //Disables Edit on Table
     this->ui->stylist_tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     //Hides some columns on Table View
@@ -80,6 +92,7 @@ EditStylistDialog::EditStylistDialog(QWidget *parent) :
     stylist_mapper->addMapping(this->ui->zip_code_lineEdit_6, this->stylist_model->fieldIndex("zip_code"));
     stylist_mapper->addMapping(this->ui->state_comboBox, this->stylist_model->fieldIndex("state"));
     stylist_mapper->addMapping(this->ui->city_lineEdit_7, this->stylist_model->fieldIndex("city"));
+    stylist_mapper->addMapping(this->ui->color_value_lineEdit, this->stylist_model->fieldIndex("color"));
     stylist_mapper->setSubmitPolicy(QDataWidgetMapper::ManualSubmit);
     //mapper->toFirst();
     connect(this->ui->stylist_tableView->selectionModel(), SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
@@ -129,10 +142,15 @@ void EditStylistDialog::combobox_text_changed(QString text){
 void EditStylistDialog::selectionChanged(const QItemSelection & selected, const QItemSelection & deselected){
     if(selected.indexes().length()){
         this->ui->edit_pushButton->setEnabled(true);
-        //int id = selected.indexes().at(0).data(0).toInt();
-        //qDebug()<<id;
+        int column_count = this->stylist_model->columnCount();
+        QString color_string = selected.indexes().at(column_count-1).data(0).toString();
+        //qDebug()<<color_string;
+        QString stylesheet_string = QString("background-color: %1;").arg(color_string);
+        this->ui->color_view_label_13->setStyleSheet(stylesheet_string);
+        this->ui->color_value_lineEdit->setText(color_string);
     }else{
         this->ui->edit_pushButton->setEnabled(false);
+        this->ui->color_view_label_13->setStyleSheet("");
     }
 }
 
@@ -196,10 +214,29 @@ void EditStylistDialog::endEditing(){
 void EditStylistDialog::on_save_pushButton_3_clicked()
 {   
     if(stylist_mapper->submit()){
+        /*
+        int cur_index = this->stylist_mapper->currentIndex();
+        QSqlRecord record = this->stylist_model->record(cur_index);
+        record.setValue("color",this->ui->color_view_label_13);
+        */
         qDebug()<<"Record successfull edited";
         this->ui->stylist_tableView->resizeColumnsToContents();
         this->ui->stylist_tableView->resizeRowsToContents();
     }else{
         qDebug()<<"An error occorred while saving table "<<stylist_model->lastError().text();
+    }
+}
+
+void EditStylistDialog::on_choose_color_Button_2_clicked()
+{
+    QColorDialog color_dialog(this);
+    //color_dialog.setOption(QColorDialog::ShowAlphaChannel);
+    if(color_dialog.exec()){
+        QString color_string = color_dialog.selectedColor().name(QColor::HexRgb);
+       QString stylesheet_string = QString("background-color: %1;").arg(color_string);
+       this->ui->color_view_label_13->setStyleSheet(stylesheet_string);
+       //Set Value to Color Value Field
+       this->ui->color_value_lineEdit->setText(color_string);
+
     }
 }
