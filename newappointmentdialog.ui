@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>414</width>
-    <height>352</height>
+    <height>358</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -215,7 +215,7 @@
          </widget>
         </item>
         <item alignment="Qt::AlignRight">
-         <widget class="QSpinBox" name="spinBox">
+         <widget class="QSpinBox" name="duration_spinBox">
           <property name="maximum">
            <number>180</number>
           </property>

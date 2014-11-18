@@ -26,6 +26,9 @@ private slots:
     void showCreateUserDialog();
     void showEditCustomerDialog();
     void showEditStylistDialog();
+    void showEditServiceDialog();
+    void showEditUserDialog();
+    void showEditAppointmentDialog();
 
 private:
     GlobalConfig global_config;

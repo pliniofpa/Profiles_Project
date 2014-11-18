@@ -18,10 +18,12 @@
 #include "ui_newuserdialog.h"
 #include "editcustumerdialog.h"
 #include "editstylistdialog.h"
+#include "editappointmentdialog.h"
+#include "editservicedialog.h"
+#include "edituserdialog.h"
 #include <QRegExp>
 #include <QRegExpValidator>
 #include <QSqlTableModel>
-#include "mytableview.h"
 struct GlobalConfig;
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -146,14 +148,17 @@ void MainWindow::showCreateStylistDialog(){
 void MainWindow::showCreateServiceDialog(){
     NewServiceDialog dialog(this);
     if(dialog.exec()){
-        MyDataModel model("services");
-        model.setValue("description",dialog.ui->description_textEdit->toPlainText());
-        model.setValue("price",dialog.ui->price_lineEdit_3->text().toFloat());
-        model.submitAll();
-        //MISSING NAME
+        MyDataModel service_model("service");
+        service_model.setValue("name",dialog.ui->name_lineEdit_2->text());
+        service_model.setValue("description",dialog.ui->description_textEdit->toPlainText());
+        service_model.setValue("price",dialog.ui->price_lineEdit_3->text().toFloat());
+        service_model.submitAll();
+        int service_id = service_model.submitAll();
+        if(service_id>0){
+            qDebug()<<QString("Service Saved. ID: %1").arg(service_id);
+        }
         return;
     }
-    return;
 }
 void MainWindow::showCreateAppointmentDialog(){
     NewAppointmentDialog dialog(this);
@@ -182,21 +187,31 @@ void MainWindow::showCreateAppointmentDialog(){
 
     //Shows Modal Dialog
     if(dialog.exec()){
-        MyDataModel model("schedule");
-        model.setValue("stylist_id",dialog.ui->stylist_comboBox->currentText());
-        model.setValue("customer_id",dialog.ui->customer_comboBox->currentText());
-        model.setValue("service_id",dialog.ui->service_comboBox->currentText());
-        //MISSING DATETIMES
-        //model.setValue("datetime_beginn",dialog.ui->date_dateEdit->);
+        MyDataModel appointment_model("schedule");
+        appointment_model.setValue("stylist_id",dialog.ui->stylist_comboBox->currentText());
+        appointment_model.setValue("customer_id",dialog.ui->customer_comboBox->currentText());
+        appointment_model.setValue("service_id",dialog.ui->service_comboBox->currentText());
+        appointment_model.setValue("datatime_begin",dialog.ui->timebegin_timeEdit->time());
+        appointment_model.setValue("datatime_end",dialog.ui->timeend_timeEdit->time());
+        int appointment_id = appointment_model.submitAll();
+        if(appointment_id>0){
+            qDebug()<<QString("Appointment Saved. ID: %1").arg(appointment_id);
+        }
+        return;
     }
 }
 void MainWindow::showCreateUserDialog(){
     NewUserDialog dialog(this);
     if(dialog.exec()){
-        MyDataModel model("user");
-        model.setValue("login",dialog.ui->login_lineEdit->text());
-        model.setValue("password",dialog.ui->password_lineEdit->text());
-        model.setValue("email",dialog.ui->email_lineEdit->text());
+        MyDataModel user_model("user");
+        user_model.setValue("login",dialog.ui->login_lineEdit->text());
+        user_model.setValue("password",dialog.ui->password_lineEdit->text());
+        user_model.setValue("email",dialog.ui->email_lineEdit->text());
+        int user_id = user_model.submitAll();
+        if(user_id>0){
+            qDebug()<<QString("User Saved. ID: %1").arg(user_id);
+        }
+        return;
     }
 }
 void MainWindow::make_connections(){
@@ -208,6 +223,9 @@ void MainWindow::make_connections(){
     QObject::connect(this->ui->action_create_User,SIGNAL(triggered()),this,SLOT(showCreateUserDialog()));
     QObject::connect(this->ui->action_edit_Customers,SIGNAL(triggered()),this,SLOT(showEditCustomerDialog()));
     QObject::connect(this->ui->action_edit_Stylists,SIGNAL(triggered()),this,SLOT(showEditStylistDialog()));
+    QObject::connect(this->ui->action_edit_Users,SIGNAL(triggered()),this,SLOT(showEditUserDialog()));
+    QObject::connect(this->ui->action_edit_Services,SIGNAL(triggered()),this,SLOT(showEditServiceDialog()));
+    QObject::connect(this->ui->action_edit_Appointments,SIGNAL(triggered()),this,SLOT(showEditAppointmentDialog()));
 }
 void MainWindow::showEditCustomerDialog(){
     EditCustumerDialog dialog;
@@ -215,5 +233,17 @@ void MainWindow::showEditCustomerDialog(){
 }
 void MainWindow::showEditStylistDialog(){
     EditStylistDialog dialog;
+    dialog.exec();
+}
+void MainWindow::showEditServiceDialog(){
+    EditServiceDialog dialog;
+    dialog.exec();
+}
+void MainWindow::showEditUserDialog(){
+    EditUserDialog dialog;
+    dialog.exec();
+}
+void MainWindow::showEditAppointmentDialog(){
+    EditAppointmentDialog dialog;
     dialog.exec();
 }

@@ -101,7 +101,7 @@
      <x>0</x>
      <y>0</y>
      <width>983</width>
-     <height>26</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -117,6 +117,7 @@
     <addaction name="action_edit_Stylists"/>
     <addaction name="action_edit_Services"/>
     <addaction name="action_edit_Users"/>
+    <addaction name="action_edit_Appointments"/>
    </widget>
    <widget class="QMenu" name="menuReports">
     <property name="title">
@@ -275,6 +276,11 @@
   <action name="action_report_Appointments_Period">
    <property name="text">
     <string>Appointments / Period</string>
+   </property>
+  </action>
+  <action name="action_edit_Appointments">
+   <property name="text">
+    <string>Appointment</string>
    </property>
   </action>
  </widget>
