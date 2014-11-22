@@ -144,7 +144,7 @@ void EditStylistDialog::selectionChanged(const QItemSelection & selected, const 
         this->ui->edit_pushButton->setEnabled(true);
         int column_count = this->stylist_model->columnCount();
         QString color_string = selected.indexes().at(column_count-1).data(0).toString();
-        //qDebug()<<color_string;
+        qDebug()<<selected;
         QString stylesheet_string = QString("background-color: %1;").arg(color_string);
         this->ui->color_view_label_13->setStyleSheet(stylesheet_string);
         this->ui->color_value_lineEdit->setText(color_string);

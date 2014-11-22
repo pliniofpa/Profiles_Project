@@ -28,6 +28,9 @@ private slots:
     void combobox_text_changed(QString text);
     void searchDateChanged(QDate date);
 
+
+
+
 private:
     Ui::EditAppointmentDialog *ui;
     GlobalConfig global_config;
@@ -35,6 +38,7 @@ private:
     QSqlTableModel *appointment_model;
     //Helper variables for Filtering
     QString filter;
+    QSqlTableModel *stylist_model,*service_model,*customer_model;
 };
 
 #endif // EDITAPPOINTMENTDIALOG_H

@@ -24,17 +24,18 @@
 #include <QRegExp>
 #include <QRegExpValidator>
 #include <QSqlTableModel>
+#include <QSqlRecord>
 struct GlobalConfig;
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    ui->setupUi(this);    
+    ui->setupUi(this);
     this->first_time = new QTime(7,0,0);
     this->last_time = new QTime(23,0,0);
     this->appt_inverval = 15;
-    this->create_daily_appt();
     this->create_employee_appt();
+    this->create_daily_appt();
     this->make_connections();
     //Set the date int the daily appointments date to current date
     this->ui->daily_appt_date_dateEdit->setDate(QDate::currentDate());
@@ -59,16 +60,62 @@ void MainWindow::create_daily_appt(){
         //curTable->setVerticalHeaderItem((curTable->rowCount()-1),curItem);
         curTime = curTime.addSecs(this->appt_inverval*60);
     }while(curTime <= (*this->last_time));
+    //Set Vertical Header Labels
     curTable->setVerticalHeaderLabels(vertical_headers_labels);
+    //Fill table with Daily stylist appointments
+    QSqlTableModel stylist_model;
+    stylist_model.setTable("stylist");
+    stylist_model.select();
+    QStringList horizontal_headers_labels;
+    QTableWidgetItem *curItem;
+    QSqlTableModel appts_model;
+    appts_model.setTable("schedule");
+    //appts_model.setFilter(QString("date='%1'").arg(this->ui->daily_appt_date_dateEdit->date().toString(global_config.date_format)));
+    appts_model.select();
+    //qDebug()<<stylist_model.rowCount();
+    //Add Horizontal Header
+    for(int i=0;i<stylist_model.rowCount();i++){
+        //Adds a new column
+        curTable->setColumnCount(curTable->columnCount()+1);
+        //Adds a new Stylist name to the horizontal header list
+        horizontal_headers_labels << stylist_model.record(i).value("name").toString();
+    }
+    //Set Horizontal Header Labels
+    curTable->setHorizontalHeaderLabels(horizontal_headers_labels);
+    //Resize Columns
+    curTable->resizeColumnsToContents();
+    for(int i=0;i<stylist_model.rowCount();i++){
+        QColor curColor(stylist_model.record(i).value("color").toString());
+        curTable->horizontalHeaderItem(i)->setForeground(QBrush(curColor));
+        QString curApptTimeBeginString, apptDetailsString;
+        for(int p=0;p<appts_model.rowCount();p++){
+            curApptTimeBeginString = appts_model.record(p).value("time_begin").toString();
+            for(int q=0;q<curTable->rowCount();q++){
+                QString curVerticalHeaderText = curTable->verticalHeaderItem(q)->text();
+                if(curApptTimeBeginString==curVerticalHeaderText){
+                    apptDetailsString = appts_model.record(p).value("details").toString();
+                    curItem = new QTableWidgetItem(apptDetailsString);
+                    curItem->setBackgroundColor(curColor);
+                    curTable->setItem(q,i,curItem);
+                }
+            }
+        }
+    }
+    //Set Horizontal Header Labels
+    curTable->setHorizontalHeaderLabels(horizontal_headers_labels);
+    //Resize Rows
+    curTable->resizeRowsToContents();
+    //Set Edit Strategy
+    curTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
     //qDebug() << vertical_headers_labels;
 }
 void MainWindow::create_employee_appt(){
     //Sets Model for Combobox
-    QSqlTableModel stylist_model;
-    stylist_model.setTable("stylist");
-    stylist_model.select();
-    this->ui->stylist_comboBox->setModel(&stylist_model);
-    this->ui->stylist_comboBox->setModelColumn(stylist_model.fieldIndex("name"));
+    this->stylist_model = new QSqlTableModel();
+    stylist_model->setTable("stylist");
+    stylist_model->select();
+    this->ui->stylist_comboBox->setModel(stylist_model);
+    this->ui->stylist_comboBox->setModelColumn(stylist_model->fieldIndex("name"));
 
     //Creates Table
     QTableWidget *curTable = this->ui->employee_day_tableWidget;
@@ -83,17 +130,6 @@ void MainWindow::create_employee_appt(){
         curTable->setItem(i%per_column_dates,(int)(i/per_column_dates)*2,new QTableWidgetItem(curTime.toString(global_config.time_format)));
         curTime = curTime.addSecs(this->appt_inverval*60);
     }
-    /*
-    do{
-        //Adds one line in the table
-        curTable->setRowCount(curTable->rowCount()+1);
-        //Creates a new item for vertical header
-        vertical_headers_labels << (curTime.toString(GlobalConfig.time_format));
-        //curTable->setVerticalHeaderItem((curTable->rowCount()-1),curItem);
-        curTime = curTime.addSecs(this->appt_inverval*60);
-    }while(curTime <= (*this->last_time));
-    curTable->setVerticalHeaderLabels(vertical_headers_labels);
-    */
 }
 
 void MainWindow::showCreateCustomerDialog(){
@@ -122,7 +158,7 @@ void MainWindow::showCreateStylistDialog(){
     NewStylistDialog dialog(this);
     //Set USA states list to State Combobox and City
     dialog.ui->state_comboBox->addItems(global_config.usa_states);
-    dialog.ui->city_lineEdit_7->setText("Fort Wayne");    
+    dialog.ui->city_lineEdit_7->setText("Fort Wayne");
     if(dialog.exec()){
         MyDataModel stylist_model("stylist");
         stylist_model.setValue("name",dialog.ui->name_lineEdit->text());
@@ -191,8 +227,10 @@ void MainWindow::showCreateAppointmentDialog(){
         appointment_model.setValue("stylist_id",dialog.ui->stylist_comboBox->currentText());
         appointment_model.setValue("customer_id",dialog.ui->customer_comboBox->currentText());
         appointment_model.setValue("service_id",dialog.ui->service_comboBox->currentText());
-        appointment_model.setValue("datatime_begin",dialog.ui->timebegin_timeEdit->time());
-        appointment_model.setValue("datatime_end",dialog.ui->timeend_timeEdit->time());
+        appointment_model.setValue("date",dialog.ui->dateEdit->date().toString(global_config.date_format));
+        appointment_model.setValue("time_begin",dialog.ui->timebegin_timeEdit->time().toString(global_config.time_format));
+        appointment_model.setValue("time_end",dialog.ui->timeend_timeEdit->time().toString(global_config.time_format));
+        appointment_model.setValue("details",dialog.ui->details_plainTextEdit->toPlainText());
         int appointment_id = appointment_model.submitAll();
         if(appointment_id>0){
             qDebug()<<QString("Appointment Saved. ID: %1").arg(appointment_id);

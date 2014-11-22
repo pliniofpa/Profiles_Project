@@ -9,23 +9,30 @@
 #include <QSqlRelationalTableModel>
 #include <QSqlRelationalDelegate>
 #include <QSqlError>
+#include <QSqlRecord>
 EditAppointmentDialog::EditAppointmentDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::EditAppointmentDialog)
 {
     ui->setupUi(this);
-    //Sets Model for Combobox
-    QSqlTableModel service_model;
-    service_model.setTable("service");
-    service_model.select();
-    this->ui->service_comboBox->setModel(&service_model);
-    this->ui->service_comboBox->setModelColumn(service_model.fieldIndex("name"));
-    //Sets Model for Combobox
-    QSqlTableModel stylist_model;
-    stylist_model.setTable("stylist");
-    stylist_model.select();
-    this->ui->stylist_comboBox->setModel(&stylist_model);
-    this->ui->stylist_comboBox->setModelColumn(stylist_model.fieldIndex("name"));
+    //Sets Model for Service Combobox
+    this->service_model = new QSqlTableModel();
+    service_model->setTable("service");
+    service_model->select();
+    this->ui->service_comboBox->setModel(service_model);
+    this->ui->service_comboBox->setModelColumn(service_model->fieldIndex("name"));
+    //Sets Model for Stylist Combobox
+    this->stylist_model = new QSqlTableModel();
+    stylist_model->setTable("stylist");
+    stylist_model->select();
+    this->ui->stylist_comboBox->setModel(stylist_model);
+    this->ui->stylist_comboBox->setModelColumn(stylist_model->fieldIndex("name"));
+    //Sets Model for Customer Combobox
+    this->customer_model = new QSqlTableModel();
+    customer_model->setTable("customer");
+    customer_model->select();
+    this->ui->customer_comboBox->setModel(customer_model);
+    this->ui->customer_comboBox->setModelColumn(customer_model->fieldIndex("name"));
     //connect(this->ui->buttonBox_2,SIGNAL(accepted()),this,SLOT(accept()));
     //Removes "What's it?" button
     this->setWindowFlags(Qt::Dialog | Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint);
@@ -74,12 +81,13 @@ EditAppointmentDialog::EditAppointmentDialog(QWidget *parent) :
     //Creates Data Mapper
     appointment_mapper = new QDataWidgetMapper;
     appointment_mapper->setModel(this->appointment_model);
-    //appointment_mapper->addMapping(this->ui->id_lineEdit, this->appointment_model->fieldIndex("id"));
+    appointment_mapper->addMapping(this->ui->details_plainTextEdit, this->appointment_model->fieldIndex("details"));
     appointment_mapper->addMapping(this->ui->stylist_comboBox, this->appointment_model->fieldIndex("stylist_id"));
     appointment_mapper->addMapping(this->ui->service_comboBox, this->appointment_model->fieldIndex("service_id"));
     appointment_mapper->addMapping(this->ui->customer_comboBox, this->appointment_model->fieldIndex("customer_id"));
-    appointment_mapper->addMapping(this->ui->timebegin_timeEdit, this->appointment_model->fieldIndex("datetime_begin"));
-    appointment_mapper->addMapping(this->ui->timeend_timeEdit, this->appointment_model->fieldIndex("datetime_end"));
+    //appointment_mapper->addMapping(this->ui->timebegin_timeEdit, this->appointment_model->fieldIndex("time_begin"));
+    //appointment_mapper->addMapping(this->ui->timeend_timeEdit, this->appointment_model->fieldIndex("time_end"));
+
     appointment_mapper->setSubmitPolicy(QDataWidgetMapper::ManualSubmit);
     //appointment_mapper->toFirst();
     //Creates connection for selection of Row on Table
@@ -136,8 +144,13 @@ void EditAppointmentDialog::combobox_text_changed(QString text){
 void EditAppointmentDialog::selectionChanged(const QItemSelection & selected, const QItemSelection & deselected){
     if(selected.indexes().length()){
         this->ui->edit_pushButton->setEnabled(true);
-        //int id = selected.indexes().at(0).data(0).toInt();
-        //qDebug()<<id;
+        QString date_string = selected.indexes().at(this->appointment_model->fieldIndex("date")).data(0).toString();
+        QString time_begin_string = selected.indexes().at(this->appointment_model->fieldIndex("time_begin")).data(0).toString();
+        QString time_end_string = selected.indexes().at(this->appointment_model->fieldIndex("time_end")).data(0).toString();
+        qDebug()<<date_string<<time_begin_string<<time_end_string;
+        this->ui->dateEdit->setDate(QDate::fromString(date_string,global_config.date_format));
+        this->ui->timebegin_timeEdit->setTime(QTime::fromString(time_begin_string,global_config.time_format));
+        this->ui->timeend_timeEdit->setTime(QTime::fromString(time_end_string,global_config.time_format));
     }else{
         this->ui->edit_pushButton->setEnabled(false);
     }
@@ -201,6 +214,15 @@ void EditAppointmentDialog::on_save_pushButton_3_clicked()
         qDebug()<<"Record successfull edited";
         this->ui->appointment_tableView->resizeColumnsToContents();
         this->ui->appointment_tableView->resizeRowsToContents();
+        //Update Date and Times
+        int curRow = this->ui->appointment_tableView->currentIndex().row();
+        QSqlRecord curRecord = this->appointment_model->record(curRow);
+        curRecord.setValue("date",this->ui->dateEdit->date().toString(global_config.date_format));
+        curRecord.setValue("time_begin",this->ui->timebegin_timeEdit->time().toString(global_config.time_format));
+        curRecord.setValue("time_end",this->ui->timeend_timeEdit->time().toString(global_config.time_format));
+        this->appointment_model->setEditStrategy(QSqlTableModel::OnManualSubmit);
+        this->appointment_model->setRecord(curRow,curRecord);
+        this->appointment_model->submitAll();
     }else{
         qDebug()<<"An error occorred while saving table "<<appointment_model->lastError().text();
     }

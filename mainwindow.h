@@ -35,6 +35,7 @@ private:
     Ui::MainWindow *ui;
     QTime *first_time,*last_time;
     int appt_inverval;
+    QSqlTableModel *stylist_model;
     void create_daily_appt();
     void create_employee_appt();    
     void make_connections();
