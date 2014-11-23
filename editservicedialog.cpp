@@ -63,7 +63,7 @@ ui(new Ui::EditServiceDialog)
     service_mapper->addMapping(this->ui->id_lineEdit, this->service_model->fieldIndex("id"));
     service_mapper->addMapping(this->ui->name_lineEdit_3, this->service_model->fieldIndex("name"));
     service_mapper->addMapping(this->ui->price_lineEdit_4, this->service_model->fieldIndex("price"));
-    service_mapper->addMapping(this->ui->description_textEdit_2, this->service_model->fieldIndex("description"));
+    service_mapper->addMapping(this->ui->description_plainTextEdit, this->service_model->fieldIndex("description"));
     service_mapper->setSubmitPolicy(QDataWidgetMapper::ManualSubmit);
     //service_mapper->toFirst();
     connect(this->ui->service_tableView->selectionModel(), SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),

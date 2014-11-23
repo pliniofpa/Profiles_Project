@@ -43,7 +43,7 @@
         <item alignment="Qt::AlignLeft">
          <widget class="QLabel" name="label_2">
           <property name="text">
-           <string>Nickname:</string>
+           <string>Nickname (Visible Name):</string>
           </property>
          </widget>
         </item>

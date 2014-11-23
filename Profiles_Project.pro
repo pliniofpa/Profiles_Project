@@ -30,7 +30,10 @@ SOURCES += main.cpp\
     editstylistdialog.cpp \
     editappointmentdialog.cpp \
     edituserdialog.cpp \
-    editservicedialog.cpp
+    editservicedialog.cpp \
+    mycell.cpp \
+    myqtablewidget.cpp \
+    apptconflitingdialog.cpp
 
 HEADERS  += mainwindow.h \
     newcustomerdialog.h \
@@ -47,7 +50,10 @@ HEADERS  += mainwindow.h \
     editstylistdialog.h \
     editappointmentdialog.h \
     edituserdialog.h \
-    editservicedialog.h
+    editservicedialog.h \
+    mycell.h \
+    myqtablewidget.h \
+    apptconflitingdialog.h
 
 FORMS    += mainwindow.ui \
     newcustomerdialog.ui \
@@ -60,7 +66,8 @@ FORMS    += mainwindow.ui \
     editstylistdialog.ui \
     editappointmentdialog.ui \
     edituserdialog.ui \
-    editservicedialog.ui
+    editservicedialog.ui \
+    apptconflitingdialog.ui
 
 RESOURCES += \
     resources.qrc

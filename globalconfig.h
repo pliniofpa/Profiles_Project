@@ -3,14 +3,17 @@
 
 #include <QObject>
 #include <QStringList>
+#include <QTime>
 class GlobalConfig : public QObject
 {
     Q_OBJECT
 public:
     explicit GlobalConfig(QObject *parent = 0);
     QString time_format,date_format;
+    int appointments_interval;
     //Sets USA States List
     QStringList usa_states;
+    QTime *first_time,*last_time;
 
 signals:
 
