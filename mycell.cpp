@@ -9,6 +9,7 @@
  * @version 1.0.0.0 (Qt: 5.3.1)
  */
 #include "mycell.h"
+#include <QMouseEvent>
 MyCell::MyCell(const QString &text)
 {
     //QTableWidgetItem(1001);
@@ -31,6 +32,13 @@ void MyCell::setApptStylistID(int stylistID){
 
 int MyCell::getApptStylistID(){
     return this->apptStylistID;
+}
+void MyCell::setStylistID(int stylistID){
+     this->stylistID = stylistID;
+}
+
+int MyCell::getStylistID(){
+    return this->stylistID;
 }
 
 /*

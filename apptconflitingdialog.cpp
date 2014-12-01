@@ -6,6 +6,9 @@ ApptConflitingDialog::ApptConflitingDialog(QWidget *parent) :
     ui(new Ui::ApptConflitingDialog)
 {
     ui->setupUi(this);
+    //Removes "What's it?" button
+    this->setWindowFlags(Qt::Dialog | Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint);
+
 }
 
 ApptConflitingDialog::~ApptConflitingDialog()

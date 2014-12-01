@@ -80,12 +80,18 @@ void MainWindow::create_daily_appt(){
     //qDebug()<<stylist_model.rowCount();
     //Add Horizontal Header
     qreal sectionSize=0;
+    MyCell *curHeaderItem;
+    QString curHeaderString;
+    int curStylistID;
     for(int i=0;i<stylist_model.rowCount();i++){
         //Adds a new column
         curTable->setColumnCount(curTable->columnCount()+1);
         //Adds a new Stylist name to the horizontal header list
-        QString curHeaderString = stylist_model.record(i).value("name").toString();
-        curTable->setHorizontalHeaderItem(i,new QTableWidgetItem(curHeaderString));
+        curHeaderString = stylist_model.record(i).value("name").toString();
+        curStylistID = stylist_model.record(i).value("id").toInt();
+        curHeaderItem = new MyCell(curHeaderString);
+        curHeaderItem->setStylistID(curStylistID);
+        curTable->setHorizontalHeaderItem(i,curHeaderItem);
         //Resize Columns
         curTable->resizeColumnsToContents();
         sectionSize = sectionSize<curTable->horizontalHeader()->sectionSize(i)?curTable->horizontalHeader()->sectionSize(i):sectionSize;
@@ -111,8 +117,8 @@ void MainWindow::create_daily_appt(){
                     curApptDetails = appts_model.record(p).value("details").toString();
                     curApptCustomerName = appts_model.record(p).value("customer_name").toString();
                     curApptServiceName = appts_model.record(p).value("service_name").toString();
-                    QString curText = "<b style='color: red'>Customer:</b> "+curApptCustomerName+"<br><b>Service:</b> "+curApptServiceName+"<br><b>Details:</b> "+curApptDetails;
-                    QString curText2 = "Customer: "+curApptCustomerName+"Service: "+curApptServiceName+"Details: "+curApptDetails;
+                    QString curText = "<b>Customer:</b> "+curApptCustomerName+"<br><b>Service:</b> "+curApptServiceName+"<br><b>Details:</b> "+curApptDetails;
+                    QString curText2 = "Customer: "+curApptCustomerName+" Service: "+curApptServiceName+" Details: "+curApptDetails;
                     curItem = new MyCell(curText2);
                     //Set Appointment ID on curItem
                     curItem->setApptID(curApptID);
@@ -121,7 +127,7 @@ void MainWindow::create_daily_appt(){
                     QLabel *curLabel = new QLabel(curText);
                     curLabel->setWordWrap(true);
                     curLabel->setAcceptDrops(true);
-                    //curLabel->setAutoFillBackground(true);
+                    curLabel->setAutoFillBackground(true);
                     //curTable->setCellWidget(q,i,curLabel);
                     curItem->setBackgroundColor(curColor);
                     curTable->setItem(q,i,curItem);
@@ -322,6 +328,7 @@ void MainWindow::make_connections(){
     QObject::connect(this->ui->action_edit_Services,SIGNAL(triggered()),this,SLOT(showEditServiceDialog()));
     QObject::connect(this->ui->action_edit_Appointments,SIGNAL(triggered()),this,SLOT(showEditAppointmentDialog()));
     QObject::connect(this->ui->daily_appt_date_dateEdit,SIGNAL(dateChanged(QDate)),this,SLOT(create_daily_appt()));
+    QObject::connect(this->ui->daily_appt_tableWidget,SIGNAL(DragandDropFinished()),this,SLOT(create_daily_appt()));
 }
 void MainWindow::showEditCustomerDialog(){
     EditCustumerDialog dialog;

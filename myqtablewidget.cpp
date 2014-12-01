@@ -5,26 +5,53 @@
 #include <QSqlTableModel>
 #include <QSqlRecord>
 #include <QSqlError>
+#include "richtextdelegate.h"
 #include "mycell.h"
+#include "apptconflitingdialog.h"
+#include "ui_apptconflitingdialog.h"
+#include <QMouseEvent>
 MyQTableWidget::MyQTableWidget(QWidget *parent):
     QTableWidget(parent)
 {
+    delegate = new RichTextDelegate;
+    //this->setItemDelegate(delegate);
 }
 void MyQTableWidget::dropEvent(QDropEvent* event)
 {
+    QSqlTableModel appointment_table;
+    appointment_table.setTable("appointment");
+    appointment_table.setFilter(QString("id='%1'").arg(originMyCellItem->getApptID()));
+    appointment_table.setEditStrategy(QSqlTableModel::OnManualSubmit);
+    bool selected = appointment_table.select();
+    QSqlRecord curRecord = appointment_table.record(0);
+    //
+    MyCell *draggedColumnHeaderItem = (MyCell *)this->horizontalHeaderItem(this->columnAt(event->pos().x()));
+    int stylistIDonDraggedColumn = draggedColumnHeaderItem->getStylistID();
+    //
     if(itemAt(event->pos())){
-        qDebug() << itemAt(event->pos());
-        qDebug()<<"Já tem um!";
-    }else{
-        QSqlTableModel appointment_table;
-        appointment_table.setTable("appointment");
-        appointment_table.setFilter(QString("id='%1'").arg(this->curDragginApptID));
-        appointment_table.setEditStrategy(QSqlTableModel::OnManualSubmit);
-        bool selected = appointment_table.select();
-        if(selected && appointment_table.rowCount()){
-            QSqlRecord curRecord = appointment_table.record(0);
+        MyCell *destMyCellItem = (MyCell *)itemAt(event->pos());
+        ApptConflitingDialog conflictDialog(this);
+        conflictDialog.ui->warning_message_label->setText("Do you want to replace the following appointment:");
+        conflictDialog.ui->customer_origin_value_label->setText("");
+        conflictDialog.ui->service_origin_value_label->setText("");
+        conflictDialog.ui->stylist_origin_value_label->setText("");
+        conflictDialog.ui->begin_time_origin_label->setText("");
+        conflictDialog.ui->end_time_origin_value_label->setText("");
+        conflictDialog.ui->customer_dest_value_label->setText("");
+        conflictDialog.ui->service_dest_value_label->setText("");
+        conflictDialog.ui->stylist_dest_value_label->setText("");
+        conflictDialog.ui->begin_time_dest_value_label->setText("");
+        conflictDialog.ui->end_time_dest_value_label->setText("");
+        if(conflictDialog.exec()){
+            qDebug()<<"Substitui";
+        }else{
+            event->ignore();
+            return;
+        }
+    }else{        
+        if(selected && appointment_table.rowCount()){            
             if(!curRecord.isEmpty()){
-                curRecord.setValue("stylist_id",0);
+                curRecord.setValue("stylist_id",stylistIDonDraggedColumn);
                 appointment_table.setRecord(0,curRecord);
                 if(!appointment_table.submitAll()){
                     qDebug()<<"Error: "<<appointment_table.lastError();
@@ -32,22 +59,27 @@ void MyQTableWidget::dropEvent(QDropEvent* event)
             }
         }
     }
-    //qDebug()<<event->mimeData()->formats();
-    //qDebug()<<event->mimeData()->html();
-    //qDebug()<<"Text: "<< event->mimeData()->text();
-    //qDebug()<<event->mimeData()->data("application/x-qabstractitemmodeldatalist");
     QTableWidget::dropEvent(event);
-
+    emit DragandDropFinished();
 }
 void MyQTableWidget::dragEnterEvent(QDragEnterEvent *event)
 {
     //qDebug()<<"MyQTableWidget::dragEnterEvent";
-    MyCell *test = (MyCell*)this->itemAt(event->pos());
+    originMyCellItem = (MyCell*)this->itemAt(event->pos());
     qDebug()<<"here";
-    if(test){
+    if(originMyCellItem){
         qDebug()<<"there";
-        this->curDragginApptID = test->getApptID();
-        this->curDraggingApptStylistID = test->getApptStylistID();
+        QTableWidget::dragEnterEvent(event);
+    }else{
+        event->ignore();
     }
-    QTableWidget::dragEnterEvent(event);
 }
+void MyQTableWidget::mousePressEvent(QMouseEvent *event){
+    //qDebug()<<"void MyQTableWidget::mousePressEvent(QMouseEvent *event)";
+    QTableWidget::mousePressEvent(event);
+}
+void MyQTableWidget::mouseMoveEvent(QMouseEvent *event){
+    //qDebug()<<"void MyQTableWidget::mouseMoveEvent(QMouseEvent *event)";
+    QTableWidget::mouseMoveEvent(event);
+}
+

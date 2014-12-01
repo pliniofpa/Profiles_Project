@@ -15,7 +15,7 @@ public:
     explicit ApptConflitingDialog(QWidget *parent = 0);
     ~ApptConflitingDialog();
 
-private:
+//private:
     Ui::ApptConflitingDialog *ui;
 };
 

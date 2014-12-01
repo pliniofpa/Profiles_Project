@@ -28,7 +28,6 @@ public:
      * @param text The given string.
      */
     MyCell(const QString &text);
-
     //void dropEvent(QDropEvent *event);
     //void dragMoveEvent(QDragMoveEvent *event);
     void dragEnterEvent(QDragEnterEvent *event);
@@ -38,9 +37,12 @@ public:
     int getApptID();
     void setApptStylistID(int stylistID);
     int getApptStylistID();
+    void setStylistID(int stylistID);
+    int getStylistID();
 private:
     int apptID;
     int apptStylistID;
+    int stylistID; //Used just in the Headers Items
 };
 
 #endif // MYCELL_H

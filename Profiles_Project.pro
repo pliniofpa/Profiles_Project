@@ -33,7 +33,8 @@ SOURCES += main.cpp\
     editservicedialog.cpp \
     mycell.cpp \
     myqtablewidget.cpp \
-    apptconflitingdialog.cpp
+    apptconflitingdialog.cpp \
+    richtextdelegate.cpp
 
 HEADERS  += mainwindow.h \
     newcustomerdialog.h \
@@ -53,7 +54,8 @@ HEADERS  += mainwindow.h \
     editservicedialog.h \
     mycell.h \
     myqtablewidget.h \
-    apptconflitingdialog.h
+    apptconflitingdialog.h \
+    richtextdelegate.h
 
 FORMS    += mainwindow.ui \
     newcustomerdialog.ui \
