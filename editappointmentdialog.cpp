@@ -17,6 +17,7 @@ EditAppointmentDialog::EditAppointmentDialog(QWidget *parent) :
     ui(new Ui::EditAppointmentDialog)
 {
     ui->setupUi(this);
+    this->exactlyMatch = false;
     //Sets Model for Service Combobox
     this->service_model = new QSqlTableModel();
     service_model->setTable("service");
@@ -80,11 +81,11 @@ EditAppointmentDialog::EditAppointmentDialog(QWidget *parent) :
     //Hides Vertical Header
     this->ui->appointment_tableView->verticalHeader()->setVisible(false);
     //Fills the search ComboBox
-    QStringList list = QString("Stylist,Service,Customer,Start Time,End Time").split(",");
+    QStringList list = QString("#,Stylist,Service,Customer,Date,Details").split(",");
     this->ui->comboBox->addItems(list);
     //Connect Selection Changed Signal
     connect(this->ui->appointment_tableView->selectionModel(),SIGNAL(selectionChanged(QItemSelection,QItemSelection)),this,SLOT(selectionChanged(QItemSelection,QItemSelection)));
-    connect(this->ui->search_lineEdit_2,SIGNAL(textEdited(QString)),this,SLOT(searchTextChanged(QString)));
+    connect(this->ui->search_lineEdit_2,SIGNAL(textChanged(QString)),this,SLOT(searchTextChanged(QString)));
     connect(this->ui->comboBox,SIGNAL(currentTextChanged(QString)),this,SLOT(combobox_text_changed(QString)));
     //Update ComboBox Text
     this->combobox_text_changed(this->ui->comboBox->currentText());
@@ -97,6 +98,14 @@ EditAppointmentDialog::EditAppointmentDialog(QWidget *parent) :
     //Load Preferences
     this->loadUerPreferences();
 }
+void EditAppointmentDialog::editApptbyID(int id){
+    this->exactlyMatch = true;
+
+    this->ui->comboBox->setCurrentText("#");
+    this->ui->search_lineEdit_2->setText(QString::number(id));
+    this->ui->appointment_tableView->selectRow(0);
+    this->beginEditing();
+}
 
 EditAppointmentDialog::~EditAppointmentDialog()
 {
@@ -105,7 +114,6 @@ EditAppointmentDialog::~EditAppointmentDialog()
 
 void EditAppointmentDialog::combobox_text_changed(QString text){
     QString field;
-    QString other="";
     this->ui->search_lineEdit_2->setVisible(true);
     this->ui->search_dateEdit->setVisible(false);
     this->searchTextChanged(QString());
@@ -115,30 +123,33 @@ void EditAppointmentDialog::combobox_text_changed(QString text){
         this->ui->search_dateEdit->setVisible(false);
         this->ui->search_lineEdit_2->setInputMask("D0000");
     }else
-        if(text=="Name")
+        if(text=="Stylist")
         {
-            field = "name";
+            field = "stylist_name";
             this->ui->search_lineEdit_2->setInputMask("");
         }else
-            if(text=="Phone")
+            if(text=="Customer")
             {
-                field = "phone1";
-                other = " OR phone2 LIKE '%%2%'";
-                this->ui->search_lineEdit_2->setInputMask("0000000000");
+                field = "customer_name";
+                this->ui->search_lineEdit_2->setInputMask("");
             }else
-                if(text=="Email")
+                if(text=="Service")
                 {
-                    field = "email";
+                    field = "service_name";
                     this->ui->search_lineEdit_2->setInputMask("");
                 }else
-                    if(text=="Birthday")
+                    if(text=="Date")
                     {
-                        field = "birthday";
+                        field = "date";
                         this->ui->search_lineEdit_2->setVisible(false);
                         this->ui->search_dateEdit->setDate(QDate::currentDate());
                         this->ui->search_dateEdit->setVisible(true);
                     }
-    this->filter = QString("%1 LIKE '%%2%'"+other).arg(field);
+    if(this->exactlyMatch){
+        this->filter = QString("%1 = '%%2%'").arg(field);
+    }else{
+        this->filter = QString("%1 LIKE '%%2%'").arg(field);
+    }
 }
 
 void EditAppointmentDialog::selectionChanged(const QItemSelection & selected, const QItemSelection & deselected){
@@ -266,7 +277,7 @@ void EditAppointmentDialog::setRange(QTime beginTime){
     this->ui->timeend_timeEdit->setTimeRange(beginTime.addSecs(global_config.appointments_interval*60),*this->global_config.last_time);
 }
 void EditAppointmentDialog::updateDuration(){
-     QTime curTime = this->ui->timeend_timeEdit->time();
+    QTime curTime = this->ui->timeend_timeEdit->time();
     int minutes = curTime.minute();
     int rest = minutes%global_config.appointments_interval;
     if(rest){

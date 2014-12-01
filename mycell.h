@@ -12,6 +12,7 @@
 #ifndef MYCELL_H
 #define MYCELL_H
 #include <QTableWidgetItem>
+#include <QString>
 
 /**
  * @brief The MyCell class defines a table cell item.
@@ -30,19 +31,28 @@ public:
     MyCell(const QString &text);
     //void dropEvent(QDropEvent *event);
     //void dragMoveEvent(QDragMoveEvent *event);
-    void dragEnterEvent(QDragEnterEvent *event);
+    //void dragEnterEvent(QDragEnterEvent *event);
     //bool dropMimeData(int row, int column, const QMimeData *data, Qt::DropAction action);
 
     void setApptID(int id);
-    int getApptID();
     void setApptStylistID(int stylistID);
+    void setApptStylistName(QString stylistName);
+    void setApptServiceName(QString serviceName);
+    void setApptDetails(QString details);
+    void setApptCustomerName(QString customerName);
+    void setApptBeginTime (QString beginTime);
+    void setApptEndTime (QString endTime);
+    int getApptID();
     int getApptStylistID();
-    void setStylistID(int stylistID);
-    int getStylistID();
+    QString getApptStylistName();
+    QString getApptServiceName();
+    QString getApptDetails();
+    QString getApptCustomerName();
+    QString getApptBeginTime();
+    QString getApptEndTime();
 private:
-    int apptID;
-    int apptStylistID;
-    int stylistID; //Used just in the Headers Items
+    int apptID, apptStylistID;
+    QString *apptServiceName,*apptStylistName, *apptDetails, *apptCustomerName, *apptBeginTime, *apptEndTime;
 };
 
 #endif // MYCELL_H

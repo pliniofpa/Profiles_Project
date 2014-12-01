@@ -19,6 +19,7 @@ class EditAppointmentDialog : public QDialog
 public:
     explicit EditAppointmentDialog(QWidget *parent = 0);
     ~EditAppointmentDialog();
+    void editApptbyID(int id);
 private slots:
     void beginEditing();
     void endEditing();
@@ -36,6 +37,7 @@ private:
     GlobalConfig global_config;
     QDataWidgetMapper *appointment_mapper;
     QSqlTableModel *appt_assoc_names_model;
+    bool exactlyMatch;
     //Helper variables for Filtering
     QString filter;
     QSqlTableModel *stylist_model,*service_model,*customer_model;

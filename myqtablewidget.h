@@ -5,6 +5,7 @@
 class QDropEvent;
 class MyCell;
 class RichTextDelegate;
+class MainWindow;
 class MyQTableWidget : public QTableWidget
 {
     //Q_OBJECT
@@ -15,11 +16,12 @@ private:
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
     RichTextDelegate *delegate;
+    int getApptDurationInMinutes(QString begin_time_string, QString end_time_string);
+    MainWindow *mainwindow;
 public:
     MyQTableWidget(QWidget *parent);
-signals:
-    void DragandDropFinished(){
-
+    void setMainWindowPointer(MainWindow *pointer){
+        this->mainwindow = pointer;
     }
 };
 

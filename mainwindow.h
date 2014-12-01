@@ -5,6 +5,7 @@
 #include <QPushButton>
 #include <QStringList>
 #include "globalconfig.h"
+#include <QItemSelection>
 class QTime;
 class QSqlTableModel;
 namespace Ui {
@@ -18,7 +19,8 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-private slots:
+
+public slots:
     void showCreateCustomerDialog();
     void showCreateStylistDialog();
     void showCreateServiceDialog();
@@ -30,6 +32,13 @@ private slots:
     void showEditUserDialog();
     void showEditAppointmentDialog();
     void create_daily_appt();
+    //Exporter la liste des utilisateurs
+    void genPdfUser();
+    void dailyApptselectionChanged(const QItemSelection & selected, const QItemSelection & deselected);
+    void deleteSelectedAppt();
+    void editSelectedAppt();
+    void addAppt();
+
 
 private:
     GlobalConfig global_config;

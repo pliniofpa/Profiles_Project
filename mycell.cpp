@@ -27,18 +27,58 @@ int MyCell::getApptID(){
     return this->apptID;
 }
 void MyCell::setApptStylistID(int stylistID){
-     this->apptStylistID = stylistID;
+    this->apptStylistID = stylistID;
 }
 
 int MyCell::getApptStylistID(){
     return this->apptStylistID;
 }
-void MyCell::setStylistID(int stylistID){
-     this->stylistID = stylistID;
+void MyCell::setApptStylistName(QString stylistName){
+    this->apptStylistName = new QString (stylistName);
 }
 
-int MyCell::getStylistID(){
-    return this->stylistID;
+void MyCell::setApptServiceName(QString serviceName){
+    this->apptServiceName = new QString (serviceName);
+}
+
+void MyCell::setApptDetails(QString details){
+    this->apptDetails = new QString (details);
+}
+
+void MyCell::setApptCustomerName(QString customerName){
+    this->apptCustomerName = new QString (customerName);
+}
+
+void MyCell::setApptBeginTime (QString beginTime){
+    this->apptBeginTime = new QString (beginTime);
+}
+
+void MyCell::setApptEndTime (QString endTime){
+    this->apptEndTime = new QString (endTime);
+}
+QString MyCell::getApptStylistName(){
+
+    return *this->apptStylistName;
+}
+
+QString MyCell::getApptServiceName(){
+    return *this->apptServiceName;
+}
+
+QString MyCell::getApptDetails(){
+    return *this->apptDetails;
+}
+
+QString MyCell::getApptCustomerName(){
+    return *this->apptCustomerName;
+}
+
+QString MyCell::getApptBeginTime(){
+    return *this->apptBeginTime;
+}
+
+QString MyCell::getApptEndTime(){
+    return *this->apptEndTime;
 }
 
 /*
@@ -60,11 +100,5 @@ void MyCell::dragEnterEvent(QDragEnterEvent *event)
 bool MyCell::dropMimeData(int row, int column, const QMimeData *data, Qt::DropAction action)
 {
     return QTableWidget::dropMimeData(row, column, data, action);
-}
-void MyCell::setStylistID(int id){
-    this->stylist_id = id;
-}
-int MyCell::getStylistID(){
-    return this->stylist_id;
 }
 */

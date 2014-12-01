@@ -30,6 +30,12 @@
 #include "mycell.h"
 #include "myqtablewidget.h"
 #include <QLabel>
+#include <QPrintDialog>
+#include <QPrinter>
+#include <QPainter>
+#include "apptdeleteconfirmationdialog.h"
+#include "ui_apptdeleteconfirmationdialog.h"
+#include <QSqlError>
 struct GlobalConfig;
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -44,6 +50,103 @@ MainWindow::MainWindow(QWidget *parent) :
     loadUerPreferences();
     this->create_employee_appt();
     this->create_daily_appt();
+    this->ui->daily_appt_tableWidget->setMainWindowPointer(this);
+    this->ui->mainToolBar->setEnabled(false);
+}
+void MainWindow::genPdfUser(){
+    QPrinter printer;
+    printer.setPaperSize(QPrinter::A4);
+    QPrintDialog printer_dialog(&printer);
+    if (printer_dialog.exec() == QDialog::Accepted) {
+        QPainter painter(&printer);
+        painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
+
+        this->ui->daily_appt_tableWidget->render(&painter);
+    }
+
+    QString filename="D:/users.pdf";
+    //Paramètres d'impression
+    //QPrinter printer(QPrinter::HighResolution);
+    printer.setOutputFileName(filename);
+    //printer.setPaperSize(QPrinter::A4);
+    printer.setOutputFormat(QPrinter::PdfFormat);
+
+    QPainter painter(&printer);
+    painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
+    this->ui->daily_appt_tableWidget->render( &painter );
+    painter.end();
+
+}
+void MainWindow::dailyApptselectionChanged(const QItemSelection & selected, const QItemSelection & deselected){
+    if(selected.indexes().length()){
+        this->ui->mainToolBar->setEnabled(true);
+        //for(int i=0;i<selected.indexes().length();i++){
+        //qDebug()<<selected.indexes().at(0).data().toString();
+        //qDebug()<<selected.indexes().at(0).row()<<selected.indexes().at(0).column();
+        if(selected.indexes().at(0).data().isValid()){
+            this->ui->actionDelete_Record->setEnabled(true);
+            this->ui->actionEdit_Record->setEnabled(true);
+        }else{
+            this->ui->actionDelete_Record->setEnabled(false);
+            this->ui->actionEdit_Record->setEnabled(false);
+        }
+        //}
+
+    }else{
+        this->ui->mainToolBar->setEnabled(false);
+    }
+}
+void MainWindow::deleteSelectedAppt(){
+    MyQTableWidget *curTable = this->ui->daily_appt_tableWidget;
+    MyCell *selectedItem = (MyCell*)curTable->selectedItems().at(0);
+    if(selectedItem){
+        ApptDeleteConfirmationDialog deleteDialog(this);
+        QString deletingApptStyle = "<span style=\"color: red\">";
+        QString spanTagClose = "</span>";
+        deleteDialog.ui->warning_message_label->setText("Do you want to delete the following appointment:");
+        deleteDialog.ui->customer_origin_value_label->setText(deletingApptStyle+selectedItem->getApptCustomerName()+spanTagClose);
+        deleteDialog.ui->service_origin_value_label->setText(deletingApptStyle+selectedItem->getApptServiceName()+spanTagClose);
+        deleteDialog.ui->stylist_origin_value_label->setText(deletingApptStyle+selectedItem->getApptStylistName()+spanTagClose);
+        deleteDialog.ui->begin_time_origin_label->setText(deletingApptStyle+selectedItem->getApptBeginTime()+spanTagClose);
+        deleteDialog.ui->end_time_origin_value_label->setText(deletingApptStyle+selectedItem->getApptEndTime()+spanTagClose);
+        deleteDialog.ui->details_origin_value_label->setText(deletingApptStyle+selectedItem->getApptDetails()+spanTagClose);
+        if(deleteDialog.exec()){
+            QSqlTableModel appointment_table;
+            appointment_table.setTable("appointment");
+            appointment_table.setFilter(QString("id='%1'").arg(selectedItem->getApptID()));
+            appointment_table.setEditStrategy(QSqlTableModel::OnManualSubmit);
+            bool selected = appointment_table.select();
+            if(selected && appointment_table.rowCount()){
+                bool rowRemoved = appointment_table.removeRow(0);
+                if(rowRemoved && appointment_table.submitAll()){
+                    qDebug()<<"Success deleting Record!";
+                }else{
+                    qDebug()<<"Error: "<<appointment_table.lastError();
+                }
+            }
+            this->create_daily_appt();
+        }
+    }
+}
+void MainWindow::editSelectedAppt(){
+    MyQTableWidget *curTable = this->ui->daily_appt_tableWidget;
+    MyCell *selectedItem = (MyCell*)curTable->selectedItems().at(0);
+    qDebug()<<selectedItem->row();
+    qDebug()<<selectedItem->column();
+    if(selectedItem){
+        int apptID = selectedItem->getApptID();
+        EditAppointmentDialog editDialog(this);
+        editDialog.editApptbyID(apptID);
+        editDialog.exec();
+        this->create_daily_appt();
+    }
+}
+void MainWindow::addAppt(){
+    MyQTableWidget *curTable = this->ui->daily_appt_tableWidget;
+    int selectedRow = curTable->selectionModel()->selectedIndexes().at(0).row();
+    int selectedColumn = curTable->selectionModel()->selectedIndexes().at(0).column();
+    qDebug()<<selectedRow;
+    qDebug()<<selectedColumn;
 }
 
 MainWindow::~MainWindow()
@@ -90,7 +193,8 @@ void MainWindow::create_daily_appt(){
         curHeaderString = stylist_model.record(i).value("name").toString();
         curStylistID = stylist_model.record(i).value("id").toInt();
         curHeaderItem = new MyCell(curHeaderString);
-        curHeaderItem->setStylistID(curStylistID);
+        //Set appointment Stylist ID
+        curHeaderItem->setApptStylistID(curStylistID);
         curTable->setHorizontalHeaderItem(i,curHeaderItem);
         //Resize Columns
         curTable->resizeColumnsToContents();
@@ -105,7 +209,7 @@ void MainWindow::create_daily_appt(){
         curTable->horizontalHeader()->resizeSection(i,sectionSize>150?sectionSize:150);
         //Set Sections not resizable
         curTable->horizontalHeader()->setSectionResizeMode(i,QHeaderView::Fixed);
-        QString curApptTimeBeginString, curApptTimeEndString, curApptCustomerName,curApptServiceName,curApptDetails;
+        QString curApptTimeBeginString,curApptStylistName, curApptTimeEndString, curApptCustomerName,curApptServiceName,curApptDetails;
         for(int p=0;p<appts_model.rowCount();p++){
             curApptTimeBeginString = appts_model.record(p).value("time_begin").toString();
             int curApptStylistID = appts_model.record(p).value("stylist_id").toInt();
@@ -117,17 +221,30 @@ void MainWindow::create_daily_appt(){
                     curApptDetails = appts_model.record(p).value("details").toString();
                     curApptCustomerName = appts_model.record(p).value("customer_name").toString();
                     curApptServiceName = appts_model.record(p).value("service_name").toString();
-                    QString curText = "<b>Customer:</b> "+curApptCustomerName+"<br><b>Service:</b> "+curApptServiceName+"<br><b>Details:</b> "+curApptDetails;
+                    curApptStylistName = appts_model.record(p).value("stylist_name").toString();
+                    //QString curText = "<b>Customer:</b> "+curApptCustomerName+"<br><b>Service:</b> "+curApptServiceName+"<br><b>Details:</b> "+curApptDetails;
                     QString curText2 = "Customer: "+curApptCustomerName+" Service: "+curApptServiceName+" Details: "+curApptDetails;
                     curItem = new MyCell(curText2);
                     //Set Appointment ID on curItem
                     curItem->setApptID(curApptID);
-                    //Set Apointment Stylist ID on CurItem
+                    //Set appointment Stylist ID on CurItem
                     curItem->setApptStylistID(curApptStylistID);
-                    QLabel *curLabel = new QLabel(curText);
-                    curLabel->setWordWrap(true);
-                    curLabel->setAcceptDrops(true);
-                    curLabel->setAutoFillBackground(true);
+                    //Set appointment Stylist Name on CurItem
+                    curItem->setApptStylistName(curApptStylistName);
+                    //Set appointment Customer Name
+                    curItem->setApptCustomerName(curApptCustomerName);
+                    //Set appointment Service Name
+                    curItem->setApptServiceName(curApptServiceName);
+                    //Set appointment Details
+                    curItem->setApptDetails(curApptDetails);
+                    //Set appointment Begin Time
+                    curItem->setApptBeginTime(curApptTimeBeginString);
+                    //Set appointment End Time
+                    curItem->setApptEndTime(curApptTimeEndString);
+                    //QLabel *curLabel = new QLabel(curText);
+                    //curLabel->setWordWrap(true);
+                    //curLabel->setAcceptDrops(true);
+                    //curLabel->setAutoFillBackground(true);
                     //curTable->setCellWidget(q,i,curLabel);
                     curItem->setBackgroundColor(curColor);
                     curTable->setItem(q,i,curItem);
@@ -328,7 +445,12 @@ void MainWindow::make_connections(){
     QObject::connect(this->ui->action_edit_Services,SIGNAL(triggered()),this,SLOT(showEditServiceDialog()));
     QObject::connect(this->ui->action_edit_Appointments,SIGNAL(triggered()),this,SLOT(showEditAppointmentDialog()));
     QObject::connect(this->ui->daily_appt_date_dateEdit,SIGNAL(dateChanged(QDate)),this,SLOT(create_daily_appt()));
-    QObject::connect(this->ui->daily_appt_tableWidget,SIGNAL(DragandDropFinished()),this,SLOT(create_daily_appt()));
+    QObject::connect(this->ui->actionAdd_Break,SIGNAL(triggered()),this,SLOT(genPdfUser()));
+    QObject::connect(this->ui->daily_appt_tableWidget->selectionModel(),SIGNAL(selectionChanged(QItemSelection,QItemSelection)),this,SLOT(dailyApptselectionChanged(QItemSelection,QItemSelection)));
+    QObject::connect(this->ui->actionDelete_Record,SIGNAL(triggered()),this,SLOT(deleteSelectedAppt()));
+    QObject::connect(this->ui->actionEdit_Record,SIGNAL(triggered()),this,SLOT(editSelectedAppt()));
+    QObject::connect(this->ui->actionAdd,SIGNAL(triggered()),this,SLOT(addAppt()));
+
 }
 void MainWindow::showEditCustomerDialog(){
     EditCustumerDialog dialog;

@@ -108,10 +108,10 @@
      <property name="title">
       <string>Appoitment Info</string>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout">
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout">
-        <item alignment="Qt::AlignLeft">
+     <layout class="QGridLayout" name="gridLayout_4">
+      <item row="0" column="0">
+       <layout class="QVBoxLayout" name="verticalLayout_3">
+        <item>
          <widget class="QLabel" name="label">
           <property name="text">
            <string>Stylist:</string>
@@ -119,19 +119,52 @@
          </widget>
         </item>
         <item>
-         <spacer name="horizontalSpacer_6">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+         <widget class="QLabel" name="label_3">
+          <property name="text">
+           <string>Service:</string>
           </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
+         </widget>
         </item>
-        <item alignment="Qt::AlignLeft">
+        <item>
+         <widget class="QLabel" name="label_2">
+          <property name="text">
+           <string>Customer:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_4">
+          <property name="text">
+           <string>Date:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_5">
+          <property name="text">
+           <string>Start Time:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_7">
+          <property name="text">
+           <string>Duration (minutes):</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_6">
+          <property name="text">
+           <string>End Time:</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="0" column="1">
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
          <widget class="QComboBox" name="stylist_comboBox">
           <property name="minimumSize">
            <size>
@@ -143,30 +176,6 @@
            <number>20</number>
           </property>
          </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_3">
-        <item alignment="Qt::AlignLeft">
-         <widget class="QLabel" name="label_3">
-          <property name="text">
-           <string>Service:</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <spacer name="horizontalSpacer_7">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
         </item>
         <item>
          <widget class="QComboBox" name="service_comboBox">
@@ -180,30 +189,6 @@
            <number>20</number>
           </property>
          </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
-        <item alignment="Qt::AlignLeft">
-         <widget class="QLabel" name="label_2">
-          <property name="text">
-           <string>Customer:</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <spacer name="horizontalSpacer_8">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
         </item>
         <item>
          <widget class="QComboBox" name="customer_comboBox">
@@ -221,50 +206,17 @@
           </property>
          </widget>
         </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_4">
-        <item alignment="Qt::AlignLeft">
-         <widget class="QLabel" name="label_4">
-          <property name="text">
-           <string>Date:</string>
-          </property>
-         </widget>
-        </item>
-        <item alignment="Qt::AlignRight">
+        <item>
          <widget class="QDateEdit" name="dateEdit">
           <property name="calendarPopup">
            <bool>true</bool>
           </property>
          </widget>
         </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_5">
         <item>
-         <widget class="QLabel" name="label_5">
-          <property name="text">
-           <string>Start Time:</string>
-          </property>
-         </widget>
-        </item>
-        <item alignment="Qt::AlignRight">
          <widget class="QTimeEdit" name="timebegin_timeEdit"/>
         </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_7">
-        <item alignment="Qt::AlignLeft">
-         <widget class="QLabel" name="label_7">
-          <property name="text">
-           <string>Duration (minutes):</string>
-          </property>
-         </widget>
-        </item>
-        <item alignment="Qt::AlignRight">
+        <item>
          <widget class="QSpinBox" name="duration_spinBox">
           <property name="minimum">
            <number>15</number>
@@ -277,23 +229,25 @@
           </property>
          </widget>
         </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_6">
-        <item alignment="Qt::AlignLeft">
-         <widget class="QLabel" name="label_6">
-          <property name="text">
-           <string>End Time:</string>
-          </property>
-         </widget>
-        </item>
-        <item alignment="Qt::AlignRight">
+        <item>
          <widget class="QTimeEdit" name="timeend_timeEdit"/>
         </item>
        </layout>
       </item>
-      <item>
+      <item row="0" column="2">
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="1" column="0" colspan="3">
        <widget class="QGroupBox" name="groupBox_2">
         <property name="minimumSize">
          <size>
@@ -314,19 +268,6 @@
             </size>
            </property>
           </widget>
-         </item>
-         <item row="0" column="1">
-          <spacer name="horizontalSpacer_5">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
          </item>
         </layout>
        </widget>
