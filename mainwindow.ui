@@ -133,7 +133,6 @@
     <addaction name="action_create_Customer"/>
     <addaction name="action_create_Stylist"/>
     <addaction name="action_create_Service"/>
-    <addaction name="action_create_Appointment"/>
     <addaction name="action_create_User"/>
    </widget>
    <addaction name="menuFile"/>
@@ -225,11 +224,6 @@
   <action name="action_create_Service">
    <property name="text">
     <string>Service</string>
-   </property>
-  </action>
-  <action name="action_create_Appointment">
-   <property name="text">
-    <string>Appointment</string>
    </property>
   </action>
   <action name="action_create_User">

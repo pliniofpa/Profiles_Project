@@ -86,9 +86,13 @@ void MainWindow::dailyApptselectionChanged(const QItemSelection & selected, cons
         if(selected.indexes().at(0).data().isValid()){
             this->ui->actionDelete_Record->setEnabled(true);
             this->ui->actionEdit_Record->setEnabled(true);
+            this->ui->actionAdd->setEnabled(false);
+            this->ui->actionAdd_Break->setEnabled(false);
         }else{
             this->ui->actionDelete_Record->setEnabled(false);
             this->ui->actionEdit_Record->setEnabled(false);
+            this->ui->actionAdd->setEnabled(true);
+            this->ui->actionAdd_Break->setEnabled(true);
         }
         //}
 
@@ -140,13 +144,6 @@ void MainWindow::editSelectedAppt(){
         editDialog.exec();
         this->create_daily_appt();
     }
-}
-void MainWindow::addAppt(){
-    MyQTableWidget *curTable = this->ui->daily_appt_tableWidget;
-    int selectedRow = curTable->selectionModel()->selectedIndexes().at(0).row();
-    int selectedColumn = curTable->selectionModel()->selectedIndexes().at(0).column();
-    qDebug()<<selectedRow;
-    qDebug()<<selectedColumn;
 }
 
 MainWindow::~MainWindow()
@@ -366,7 +363,7 @@ void MainWindow::showCreateServiceDialog(){
         return;
     }
 }
-void MainWindow::showCreateAppointmentDialog(){
+void MainWindow::addAppt(){
     NewAppointmentDialog dialog(this);
     //Buttons Connections
     QObject::connect(dialog.ui->new_customer_pushButton_3,SIGNAL(clicked()),this,SLOT(showCreateCustomerDialog()));
@@ -391,20 +388,46 @@ void MainWindow::showCreateAppointmentDialog(){
     dialog.ui->stylist_comboBox->setModel(&stylist_model);
     dialog.ui->stylist_comboBox->setModelColumn(stylist_model.fieldIndex("name"));
     //Configure Dates and Times
-    dialog.ui->dateEdit->setDate(QDate::currentDate());
+    dialog.ui->dateEdit->setDate(this->ui->daily_appt_date_dateEdit->date());
+    //Set Params of new Appointment for selected column
+    MyQTableWidget *curTable = this->ui->daily_appt_tableWidget;
+    int selectedRow = curTable->selectionModel()->selectedIndexes().at(0).row();
+    int selectedColumn = curTable->selectionModel()->selectedIndexes().at(0).column();
+    QString beginTimeString = curTable->verticalHeaderItem(selectedRow)->text();
+    QString stylistName = curTable->horizontalHeaderItem(selectedColumn)->text();
+    dialog.ui->stylist_comboBox->setCurrentText(stylistName);
+    dialog.ui->timebegin_timeEdit->setTime(QTime::fromString(beginTimeString,global_config.time_format));
 
     //Shows Modal Dialog
     if(dialog.exec()){
         MyDataModel appointment_model("appointment");
-        //Recovery the IDs from Comboboxes Labels
+        //Retrieves the IDs from Comboboxes Labels
         QString selectedCustomer,selectedService,selectedStylist;
         selectedCustomer = dialog.ui->customer_comboBox->currentText();
         selectedService = dialog.ui->service_comboBox->currentText();
         selectedStylist = dialog.ui->stylist_comboBox->currentText();
-        customer_model.setFilter("");
-        appointment_model.setValue("stylist_id",dialog.ui->stylist_comboBox->currentText());
-        appointment_model.setValue("customer_id",dialog.ui->customer_comboBox->currentText());
-        appointment_model.setValue("service_id",dialog.ui->service_comboBox->currentText());
+        //Retrieves Customer ID
+        QSqlTableModel *idRetrieveryTable = new QSqlTableModel;
+        idRetrieveryTable->setTable("customer");
+        idRetrieveryTable->select();
+        idRetrieveryTable->setFilter(QString("name='%1'").arg(selectedCustomer));
+        QSqlRecord curCustomerRecord = idRetrieveryTable->record(0);
+        int selectedCustomerID = curCustomerRecord.value("id").toInt();
+        //Update Service Table
+        idRetrieveryTable->setTable("service");
+        idRetrieveryTable->select();
+        idRetrieveryTable->setFilter(QString("name='%1'").arg(selectedService));
+        QSqlRecord curServiceRecord = idRetrieveryTable->record(0);
+        int selectedServiceID = curServiceRecord.value("id").toInt();
+        //Update Stylist Table
+        idRetrieveryTable->setTable("stylist");
+        idRetrieveryTable->select();
+        idRetrieveryTable->setFilter(QString("name='%1'").arg(selectedStylist));
+        QSqlRecord curStylistRecord = idRetrieveryTable->record(0);
+        int selectedStylistID = curStylistRecord.value("id").toInt();
+        appointment_model.setValue("stylist_id",selectedStylistID);
+        appointment_model.setValue("customer_id",selectedCustomerID);
+        appointment_model.setValue("service_id",selectedServiceID);
         appointment_model.setValue("date",dialog.ui->dateEdit->date().toString(global_config.date_format));
         appointment_model.setValue("time_begin",dialog.ui->timebegin_timeEdit->time().toString(global_config.time_format));
         appointment_model.setValue("time_end",dialog.ui->timeend_timeEdit->time().toString(global_config.time_format));
@@ -437,7 +460,6 @@ void MainWindow::make_connections(){
     QObject::connect(this->ui->action_create_Customer,SIGNAL(triggered()),this,SLOT(showCreateCustomerDialog()));
     QObject::connect(this->ui->action_create_Stylist,SIGNAL(triggered()),this,SLOT(showCreateStylistDialog()));
     QObject::connect(this->ui->action_create_Service,SIGNAL(triggered()),this,SLOT(showCreateServiceDialog()));
-    QObject::connect(this->ui->action_create_Appointment,SIGNAL(triggered()),this,SLOT(showCreateAppointmentDialog()));
     QObject::connect(this->ui->action_create_User,SIGNAL(triggered()),this,SLOT(showCreateUserDialog()));
     QObject::connect(this->ui->action_edit_Customers,SIGNAL(triggered()),this,SLOT(showEditCustomerDialog()));
     QObject::connect(this->ui->action_edit_Stylists,SIGNAL(triggered()),this,SLOT(showEditStylistDialog()));

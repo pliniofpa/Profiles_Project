@@ -24,7 +24,6 @@ public slots:
     void showCreateCustomerDialog();
     void showCreateStylistDialog();
     void showCreateServiceDialog();
-    void showCreateAppointmentDialog();
     void showCreateUserDialog();
     void showEditCustomerDialog();
     void showEditStylistDialog();
