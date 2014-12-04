@@ -60,7 +60,11 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
-       <widget class="QTextEdit" name="description_textEdit"/>
+       <widget class="QTextEdit" name="description_textEdit">
+        <property name="sizeAdjustPolicy">
+         <enum>QAbstractScrollArea::AdjustToContentsOnFirstShow</enum>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>

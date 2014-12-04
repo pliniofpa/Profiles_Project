@@ -485,7 +485,11 @@
        </layout>
       </item>
       <item row="1" column="0">
-       <widget class="QTableView" name="stylist_tableView"/>
+       <widget class="QTableView" name="stylist_tableView">
+        <property name="sizeAdjustPolicy">
+         <enum>QAbstractScrollArea::AdjustToContentsOnFirstShow</enum>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>

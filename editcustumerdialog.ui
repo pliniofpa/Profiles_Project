@@ -72,7 +72,11 @@
        </layout>
       </item>
       <item row="1" column="0">
-       <widget class="QTableView" name="customer_tableView"/>
+       <widget class="QTableView" name="customer_tableView">
+        <property name="sizeAdjustPolicy">
+         <enum>QAbstractScrollArea::AdjustToContentsOnFirstShow</enum>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>

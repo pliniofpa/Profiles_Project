@@ -40,7 +40,7 @@
 
 #ifndef CONNECTION_H
 #define CONNECTION_H
-
+#include <QtSql>
 #include <QMessageBox>
 #include <QSqlDatabase>
 #include <QSqlError>
@@ -59,15 +59,16 @@
 static bool createConnection()
 {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName("C:/Qt_Projects/Profiles_Project/db_test.db");
+    db.setDatabaseName("C:/Users/Gulf/Documents/GitHub/Profiles_Project/db_test.db");
     if (!db.open()) {
-        QMessageBox::critical(0, qApp->tr("Cannot open database"),
-            qApp->tr("Unable to establish a database connection.\n"
-                     "This example needs SQLite support. Please read "
-                     "the Qt SQL driver documentation for information how "
-                     "to build it.\n\n"
+        //db.setDatabaseName("/db_test.db");
+        if (!db.open()) {
+            QMessageBox::critical(0, qApp->tr("Cannot open database"),
+            qApp->tr("Unable to establish a database connection.\n\n"
                      "Click Cancel to exit."), QMessageBox::Cancel);
-        return false;
+            return false;
+        }
+    return true;
     }
     //qDebug()<<db.tables();
     return true;
