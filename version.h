@@ -16,7 +16,7 @@
 #define VER_PRODUCTVERSION_STR      "1.0\0"
 
 #define VER_COMPANYNAME_STR         "Indiana Tech"
-#define VER_FILEDESCRIPTION_STR     "Tech Scheduler"
+#define VER_FILEDESCRIPTION_STR     "Tech Scheduler Executable File"
 #define VER_INTERNALNAME_STR        "Tech Scheduler"
 #define VER_LEGALCOPYRIGHT_STR      "Copyright © 2014 Indiana Tech"
 #define VER_LEGALTRADEMARKS1_STR    "All Rights Reserved"

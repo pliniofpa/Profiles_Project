@@ -3,8 +3,7 @@
 
 #include <QDialog>
 #include "mainwindow.h"
-#include <QTime>
-#include "globalconfig.h"
+
 namespace Ui {
 class NewAppointmentDialog;
 }
@@ -20,11 +19,6 @@ public:
 
 private:
     Ui::NewAppointmentDialog *ui;
-    GlobalConfig global_config;
-private slots:
-    void setRange(QTime beginTime);
-    void updateEndTime();
-    void updateDuration();
 };
 
 #endif // NEWAPPOINTMENTDIALOG_H

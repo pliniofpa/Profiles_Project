@@ -35,7 +35,7 @@ private:
     Ui::EditAppointmentDialog *ui;
     GlobalConfig global_config;
     QDataWidgetMapper *appointment_mapper;
-    QSqlTableModel *appt_assoc_names_model;
+    QSqlTableModel *appointment_model;
     //Helper variables for Filtering
     QString filter;
     QSqlTableModel *stylist_model,*service_model,*customer_model;

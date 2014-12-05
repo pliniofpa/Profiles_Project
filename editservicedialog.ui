@@ -128,7 +128,7 @@
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_2">
          <item>
-          <widget class="QPlainTextEdit" name="description_plainTextEdit"/>
+          <widget class="QTextEdit" name="description_textEdit_2"/>
          </item>
         </layout>
        </widget>

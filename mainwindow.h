@@ -29,38 +29,16 @@ private slots:
     void showEditServiceDialog();
     void showEditUserDialog();
     void showEditAppointmentDialog();
-    void create_daily_appt();
 
 private:
     GlobalConfig global_config;
-    Ui::MainWindow *ui;    
+    Ui::MainWindow *ui;
+    QTime *first_time,*last_time;
+    int appt_inverval;
     QSqlTableModel *stylist_model;
+    void create_daily_appt();
     void create_employee_appt();    
     void make_connections();
-
-    //Save/Load User Preferences members
-    /**
-     * @brief Saves user preferences.
-     *
-     * Saves user preferences such as window position, window size, user modified fields. This function is called always\n
-     * that this windows is closed using the Ok button. For more information about how it works see the QSettings documentation.
-     */
-    void saveUserPreferences();
-    /**
-     * @brief Loads user preferences.
-     *
-     * Loads user preferences such as window position, window size, user modified fields. This function is called always\n
-     * that this windows is closed using the Ok button. For more information about how it works see the QSettings documentation.
-     */
-    void loadUerPreferences();
-    /**
-     * @brief Window close event.
-     *
-     * This Event is called always that this windows is closed. This function is used to perform saving of user preferences.
-     * @param event QCloseEvent object.
-     */
-    void closeEvent(QCloseEvent *event);
-
 };
 
 #endif // MAINWINDOW_H
