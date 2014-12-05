@@ -22,7 +22,7 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="daily_appt_tab">
        <attribute name="title">
@@ -81,7 +81,7 @@
          </layout>
         </item>
         <item>
-         <widget class="QTableWidget" name="employee_day_tableWidget"/>
+         <widget class="MyQTableWidget" name="employee_day_tableWidget"/>
         </item>
        </layout>
       </widget>

@@ -18,6 +18,13 @@ MyQTableWidget::MyQTableWidget(QWidget *parent):
     //delegate = new RichTextDelegate;
     //this->setItemDelegate(delegate);
     this->mainwindow = 0;
+    //Enables Drag and Drop
+    this->setDragDropMode(QAbstractItemView::InternalMove);
+    this->setDragDropOverwriteMode(false);
+    this->setDropIndicatorShown(true);
+    this->setDragEnabled(true);
+    //Set Edit Strategy
+    this->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
 }
 void MyQTableWidget::dropEvent(QDropEvent* event)
@@ -41,12 +48,10 @@ void MyQTableWidget::dropEvent(QDropEvent* event)
     QString beginTimeonDestColumn = destRowHeaderItem->text();
     //
     MyCell *destMyCellItem = (MyCell *)this->item(destItemRow,draggedColumn);
-    int a = originMyCellItem->row();
-    int b = originMyCellItem->column();
     int rowSpan = this->rowSpan(originMyCellItem->row(),originMyCellItem->column());
     for(int i=0;i<rowSpan;i++){
         destMyCellItem = (MyCell *)this->item(destItemRow+i,draggedColumn);
-        if(destMyCellItem){
+        if(destMyCellItem &&(destMyCellItem!=originMyCellItem)){
             ApptConflitingDialog conflictDialog(this);
             QString newApptStyle = "<span style=\"color: green\">";
             QString replacedApptStyle = "<span style=\"color: red\">";
@@ -136,6 +141,6 @@ int MyQTableWidget::getApptDurationInMinutes(QString begin_time_string, QString 
     GlobalConfig global_config;
     QTime begin_time = QTime::fromString(begin_time_string,global_config.time_format);
     QTime end_time = QTime::fromString(end_time_string,global_config.time_format);
-    int durationInMinutes = (end_time.hour()*60+end_time.minute())-(begin_time.hour()*60+begin_time.minute());
+    int durationInMinutes = (end_time.msecsSinceStartOfDay()/1000/60)-(begin_time.msecsSinceStartOfDay()/1000/60);
     return durationInMinutes;
 }

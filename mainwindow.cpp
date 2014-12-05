@@ -163,7 +163,7 @@ void MainWindow::create_daily_appt(){
         curTable->setRowCount(curTable->rowCount()+1);
         //Creates a new item for vertical header
         curTable->setVerticalHeaderItem(curTable->rowCount()-1, new QTableWidgetItem(curTime.toString(global_config.time_format)));
-        curTable->verticalHeader()->resizeSection(curTable->rowCount()-1,60);
+        curTable->verticalHeader()->resizeSection(curTable->rowCount()-1,global_config.verticalSectionSize);
         curTime = curTime.addSecs(global_config.appointments_interval*60);
     }while(curTime <= (*global_config.last_time));
     //Fill table with Daily stylist appointments
@@ -203,7 +203,7 @@ void MainWindow::create_daily_appt(){
         int curStylistID = stylist_model.record(i).value("id").toInt();
         //curTable->horizontalHeaderItem(i)->setForeground(QBrush(curColor));
         //Equalize the size to all Horizontal Section
-        curTable->horizontalHeader()->resizeSection(i,sectionSize>150?sectionSize:150);
+        curTable->horizontalHeader()->resizeSection(i,sectionSize>global_config.default_column_size?sectionSize:global_config.default_column_size);
         //Set Sections not resizable
         curTable->horizontalHeader()->setSectionResizeMode(i,QHeaderView::Fixed);
         QString curApptTimeBeginString,curApptStylistName, curApptTimeEndString, curApptCustomerName,curApptServiceName,curApptDetails;
@@ -255,24 +255,8 @@ void MainWindow::create_daily_appt(){
     }
     //Resize Rows
     //curTable->resizeRowsToContents();
-    //Set Edit Strategy
-    curTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
     //Set Sections of Horizontal Headers as fixed
-    curTable->horizontalHeader()->setSectionsMovable(true);
-    //
-    //Enables Drag and Drop
-    curTable->setDragDropMode(QAbstractItemView::InternalMove);
-    curTable->setDragDropOverwriteMode(false);
-    curTable->setDropIndicatorShown(true);
-    curTable->setDragEnabled(true);
-    //curTable->setAcceptDrops(true);
-
-    //
-    //qDebug()<<curTable->rowSpan(1,1);
-    //curTable->item(0,0)->setFlags(Qt::NoItemFlags);
-    //qDebug()<<curTable->item(2,4)->text();
-    //qDebug()<<curTable->item(3,4)->text();
-
+    curTable->horizontalHeader()->setSectionsMovable(true);   
 }
 void MainWindow::create_employee_appt(){
     //Sets Model for Combobox
@@ -288,12 +272,21 @@ void MainWindow::create_employee_appt(){
     curTable->horizontalHeader()->setVisible(false);
     QTime curTime(global_config.first_time->hour(),global_config.first_time->minute(),global_config.first_time->second());
     //QStringList vertical_headers_labels;
-    int per_column_dates=20;
-    curTable->setRowCount(per_column_dates);
+    curTable->setRowCount(global_config.per_column_dates);
     for(int i=0;curTime <= (*global_config.last_time);++i){
-        curTable->setColumnCount(2+((int)(i/per_column_dates))*2);
-        curTable->setItem(i%per_column_dates,(int)(i/per_column_dates)*2,new QTableWidgetItem(curTime.toString(global_config.time_format)));
+        curTable->setColumnCount(2+((int)(i/global_config.per_column_dates))*2);
+        MyCell *curItem = new MyCell(curTime.toString(global_config.time_format));
+        curItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+        curItem->setFlags(Qt::ItemIsEnabled);
+        curTable->setItem(i%global_config.per_column_dates,(int)(i/global_config.per_column_dates)*2,curItem);
         curTime = curTime.addSecs(global_config.appointments_interval*60);
+        curTable->verticalHeader()->resizeSection(i,global_config.verticalSectionSize);
+    }
+    for(int i=0;i<curTable->columnCount();++i){
+        //Equalize the size to all Horizontal Section
+        curTable->horizontalHeader()->resizeSection(i,global_config.default_column_size);
+        //Set Sections not resizable
+        curTable->horizontalHeader()->setSectionResizeMode(i,QHeaderView::Fixed);
     }
 }
 
@@ -524,6 +517,6 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 }
 int MainWindow::getApptDurationInMinutes(QTime begin_time, QTime end_time){
-    int durationInMinutes = (end_time.hour()*60+end_time.minute())-(begin_time.hour()*60+begin_time.minute());
+    int durationInMinutes = (end_time.msecsSinceStartOfDay()/1000/60)-(begin_time.msecsSinceStartOfDay()/1000/60);
     return durationInMinutes;
 }

@@ -37,7 +37,7 @@ void NewAppointmentDialog::updateDuration(){
     //Update End Time
     QTime end_time = this->ui->timeend_timeEdit->time();
     QTime begin_time = this->ui->timebegin_timeEdit->time();
-    this->ui->duration_spinBox->setValue((end_time.hour()*60+end_time.minute())-(begin_time.hour()*60+begin_time.minute()));
+    this->ui->duration_spinBox->setValue((end_time.msecsSinceStartOfDay()/1000/60)-(begin_time.msecsSinceStartOfDay()/1000/60));
 }
 void NewAppointmentDialog::updateEndTime(){
     int duration = this->ui->duration_spinBox->value();

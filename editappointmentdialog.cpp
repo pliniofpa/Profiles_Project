@@ -12,6 +12,8 @@
 #include <QSqlRecord>
 #include <QSettings>
 #include "version.h"
+#include "apptconflitingdialog.h"
+#include "ui_apptconflitingdialog.h"
 EditAppointmentDialog::EditAppointmentDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::EditAppointmentDialog)
@@ -41,7 +43,7 @@ EditAppointmentDialog::EditAppointmentDialog(QWidget *parent) :
     this->setWindowFlags(Qt::Dialog | Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint);
     //Make Connections
     QObject::connect(this->ui->edit_pushButton,SIGNAL(clicked()),this,SLOT(beginEditing()));
-    QObject::connect(this->ui->save_pushButton_3,SIGNAL(clicked()),this,SLOT(endEditing()));
+    //QObject::connect(this->ui->save_pushButton_3,SIGNAL(clicked()),this,SLOT(endEditing()));
     QObject::connect(this->ui->cancel_pushButton_2,SIGNAL(clicked()),this,SLOT(endEditing()));
     //Disables Edit, Cancel and Save Buttons
     this->ui->edit_pushButton->setEnabled(false);
@@ -172,7 +174,7 @@ void EditAppointmentDialog::selectionChanged(const QItemSelection & selected, co
         //Update Interval
         QTime end_time = this->ui->timeend_timeEdit->time();
         QTime begin_time = this->ui->timebegin_timeEdit->time();
-        this->ui->duration_spinBox->setValue((end_time.hour()*60+end_time.minute())-(begin_time.hour()*60+begin_time.minute()));
+        this->ui->duration_spinBox->setValue((end_time.msecsSinceStartOfDay()/1000/60)-(begin_time.msecsSinceStartOfDay()/1000/60));
     }else{
         this->ui->edit_pushButton->setEnabled(false);
     }
@@ -236,41 +238,87 @@ void EditAppointmentDialog::on_save_pushButton_3_clicked()
 {
     //Recovery the Record from Appointment Table
     int curRow = this->ui->appointment_tableView->currentIndex().row();
-    QSqlTableModel appointment_model;
-    appointment_model.setTable("appointment");
-    appointment_model.setEditStrategy(QSqlTableModel::OnManualSubmit);
-    appointment_model.select();
-    QSqlRecord curRecord = appointment_model.record(curRow);
-    //Update Date, Times and Details
-    curRecord.setValue("date",this->ui->dateEdit->date().toString(global_config.date_format));
-    curRecord.setValue("time_begin",this->ui->timebegin_timeEdit->time().toString(global_config.time_format));
-    curRecord.setValue("time_end",this->ui->timeend_timeEdit->time().toString(global_config.time_format));
-    curRecord.setValue("details",this->ui->details_plainTextEdit->toPlainText());
-    //Update Customer Table
-    this->customer_model->setFilter(QString("name='%1'").arg(this->ui->customer_comboBox->currentText()));
-    QSqlRecord curCustomerRecord = customer_model->record(0);
-    curRecord.setValue("customer_id",curCustomerRecord.value("id"));
-    this->customer_model->setFilter("");
-    //Update Service Table
-    this->service_model->setFilter(QString("name='%1'").arg(this->ui->service_comboBox->currentText()));
-    QSqlRecord curServiceRecord = service_model->record(0);
-    curRecord.setValue("service_id",curServiceRecord.value("id"));
-    this->service_model->setFilter("");
-    //Update Stylist Table
-    this->stylist_model->setFilter(QString("name='%1'").arg(this->ui->stylist_comboBox->currentText()));
-    QSqlRecord curStylistRecord = stylist_model->record(0);
-    curRecord.setValue("stylist_id",curStylistRecord.value("id"));
-    this->stylist_model->setFilter("");
-    appointment_model.setRecord(curRow,curRecord);
-    if(appointment_model.submitAll()){
-        //Recovery the data from view
-        appt_assoc_names_model->select();
-        //Resize Table View Columns and Rows
-        this->ui->appointment_tableView->resizeColumnsToContents();
-        this->ui->appointment_tableView->resizeRowsToContents();
-        qDebug()<<"Record successfull edited";
-    }else{
-        qDebug()<<"An error occorred while saving table "<<appt_assoc_names_model->lastError().text();
+    int curApptID = this->appt_assoc_names_model->record(curRow).value("id").toInt();
+    //Verify if there is conflict between existing appointments and this one being edited
+    QSqlTableModel appt_assoc_model;
+    appt_assoc_model.setTable("appt_assoc_names");
+    appt_assoc_model.setEditStrategy(QSqlTableModel::OnManualSubmit);
+    appt_assoc_model.setFilter(QString("stylist_name='%1' AND date='%2'").arg(this->ui->stylist_comboBox->currentText()).arg(this->ui->dateEdit->date().toString(global_config.date_format)));
+    appt_assoc_model.select();
+    int rowCount = appt_assoc_model.rowCount();
+    QTime end_time = this->ui->timeend_timeEdit->time();
+    QTime begin_time = this->ui->timebegin_timeEdit->time();
+    int appt_intervals = ((end_time.msecsSinceStartOfDay()-begin_time.msecsSinceStartOfDay())/1000/60)/global_config.appointments_interval;
+    for(int i=0;i<rowCount;i++){
+        QSqlRecord curRecord = appt_assoc_model.record(i);
+        if(curRecord.value("id").toInt()!=curApptID){
+            for(int p=0;p<appt_intervals;p++){
+                QTime curTime = begin_time.addSecs(global_config.appointments_interval*60*p);
+                if(curRecord.value("time_begin").toString()==curTime.toString(global_config.time_format)){
+                    qDebug()<<"Conflitou!!!";
+                    ApptConflitingDialog conflictDialog(this);
+                    QString newApptStyle = "<span style=\"color: green\">";
+                    QString replacedApptStyle = "<span style=\"color: red\">";
+                    QString spanTagClose = "</span>";
+                    conflictDialog.ui->warning_message_label->setText("Impossible to save edited Appointment. Conflict between Appointments:");
+                    conflictDialog.ui->label->setText("with:");
+                    conflictDialog.ui->customer_origin_value_label->setText(newApptStyle+this->ui->customer_comboBox->currentText()+spanTagClose);
+                    conflictDialog.ui->service_origin_value_label->setText(newApptStyle+this->ui->service_comboBox->currentText()+spanTagClose);
+                    conflictDialog.ui->stylist_origin_value_label->setText(newApptStyle+this->ui->stylist_comboBox->currentText()+spanTagClose);
+                    conflictDialog.ui->begin_time_origin_label->setText(newApptStyle+this->ui->timebegin_timeEdit->time().toString(global_config.time_format)+spanTagClose);
+                    conflictDialog.ui->end_time_origin_value_label->setText(newApptStyle+this->ui->timeend_timeEdit->time().toString(global_config.time_format)+spanTagClose);
+                    conflictDialog.ui->details_origin_value_label->setText(newApptStyle+this->ui->details_plainTextEdit->toPlainText()+spanTagClose);
+                    conflictDialog.ui->customer_dest_value_label->setText(replacedApptStyle+curRecord.value("customer_name").toString()+spanTagClose);
+                    conflictDialog.ui->service_dest_value_label->setText(replacedApptStyle+curRecord.value("service_name").toString()+spanTagClose);
+                    conflictDialog.ui->stylist_dest_value_label->setText(replacedApptStyle+curRecord.value("stylist_name").toString()+spanTagClose);
+                    conflictDialog.ui->begin_time_dest_value_label->setText(replacedApptStyle+curRecord.value("time_begin").toString()+spanTagClose);
+                    conflictDialog.ui->end_time_dest_value_label->setText(replacedApptStyle+curRecord.value("time_end").toString()+spanTagClose);
+                    conflictDialog.ui->details_dest_value_label->setText(replacedApptStyle+curRecord.value("details").toString()+spanTagClose);
+                    conflictDialog.exec();
+                    return;
+                }
+            }
+        }
+    }
+    {
+        QSqlTableModel appointment_model;
+        appointment_model.setTable("appointment");
+        appointment_model.setEditStrategy(QSqlTableModel::OnManualSubmit);
+        appointment_model.setFilter(QString("id='%1'").arg(curApptID));
+        appointment_model.select();
+        QSqlRecord curRecord = appointment_model.record(0);
+        //Update Date, Times and Details
+        curRecord.setValue("date",this->ui->dateEdit->date().toString(global_config.date_format));
+        curRecord.setValue("time_begin",this->ui->timebegin_timeEdit->time().toString(global_config.time_format));
+        curRecord.setValue("time_end",this->ui->timeend_timeEdit->time().toString(global_config.time_format));
+        curRecord.setValue("details",this->ui->details_plainTextEdit->toPlainText());
+        //Update Customer Table
+        this->customer_model->setFilter(QString("name='%1'").arg(this->ui->customer_comboBox->currentText()));
+        QSqlRecord curCustomerRecord = customer_model->record(0);
+        curRecord.setValue("customer_id",curCustomerRecord.value("id"));
+        this->customer_model->setFilter("");
+        //Update Service Table
+        this->service_model->setFilter(QString("name='%1'").arg(this->ui->service_comboBox->currentText()));
+        QSqlRecord curServiceRecord = service_model->record(0);
+        curRecord.setValue("service_id",curServiceRecord.value("id"));
+        this->service_model->setFilter("");
+        //Update Stylist Table
+        this->stylist_model->setFilter(QString("name='%1'").arg(this->ui->stylist_comboBox->currentText()));
+        QSqlRecord curStylistRecord = stylist_model->record(0);
+        curRecord.setValue("stylist_id",curStylistRecord.value("id"));
+        this->stylist_model->setFilter("");
+        appointment_model.setRecord(curRow,curRecord);
+        if(appointment_model.submitAll()){
+            //Recovery the data from view
+            appt_assoc_names_model->select();
+            //Resize Table View Columns and Rows
+            this->ui->appointment_tableView->resizeColumnsToContents();
+            this->ui->appointment_tableView->resizeRowsToContents();
+            qDebug()<<"Record successfull edited";
+            endEditing();
+        }else{
+            qDebug()<<"An error occorred while saving table "<<appt_assoc_names_model->lastError().text();
+        }
     }
 }
 void EditAppointmentDialog::setRange(QTime beginTime){
@@ -292,7 +340,7 @@ void EditAppointmentDialog::updateDuration(){
     //Update End Time
     QTime end_time = this->ui->timeend_timeEdit->time();
     QTime begin_time = this->ui->timebegin_timeEdit->time();
-    this->ui->duration_spinBox->setValue((end_time.hour()*60+end_time.minute())-(begin_time.hour()*60+begin_time.minute()));
+    this->ui->duration_spinBox->setValue((end_time.msecsSinceStartOfDay()/1000/60)-(begin_time.msecsSinceStartOfDay()/1000/60));
 }
 void EditAppointmentDialog::updateEndTime(){
     int duration = this->ui->duration_spinBox->value();
