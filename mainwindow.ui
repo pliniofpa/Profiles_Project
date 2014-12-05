@@ -22,22 +22,46 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="daily_appt_tab">
        <attribute name="title">
         <string>Salon Day</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout">
-        <item row="1" column="1">
-         <widget class="MyQTableWidget" name="daily_appt_tableWidget"/>
+        <item row="0" column="0">
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item alignment="Qt::AlignLeft">
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>Date:</string>
+            </property>
+           </widget>
+          </item>
+          <item alignment="Qt::AlignLeft">
+           <widget class="QDateEdit" name="daily_appt_date_dateEdit">
+            <property name="calendarPopup">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
         </item>
-        <item row="0" column="1" alignment="Qt::AlignLeft">
-         <widget class="QDateEdit" name="daily_appt_date_dateEdit">
-          <property name="calendarPopup">
-           <bool>true</bool>
-          </property>
-         </widget>
+        <item row="1" column="0">
+         <widget class="MyQTableWidget" name="daily_appt_tableWidget"/>
         </item>
        </layout>
       </widget>
@@ -48,6 +72,20 @@
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QLabel" name="label_3">
+            <property name="text">
+             <string>Date:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QDateEdit" name="employee_day_date_dateEdit">
+            <property name="calendarPopup">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
           <item alignment="Qt::AlignLeft">
            <widget class="QLabel" name="label">
             <property name="text">
@@ -81,7 +119,7 @@
          </layout>
         </item>
         <item>
-         <widget class="QTableWidget" name="employee_day_tableWidget"/>
+         <widget class="MyQTableWidget" name="employee_day_tableWidget"/>
         </item>
        </layout>
       </widget>
@@ -95,7 +133,7 @@
      <x>0</x>
      <y>0</y>
      <width>983</width>
-     <height>26</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

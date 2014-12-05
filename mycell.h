@@ -13,6 +13,7 @@
 #define MYCELL_H
 #include <QTableWidgetItem>
 #include <QString>
+#include <QList>
 
 /**
  * @brief The MyCell class defines a table cell item.
@@ -42,6 +43,16 @@ public:
     void setApptCustomerName(QString customerName);
     void setApptBeginTime (QString beginTime);
     void setApptEndTime (QString endTime);
+    void setMyCellParent(MyCell *parent){
+        this->MyCellParent = parent;
+    }
+    void addMyCellChild(MyCell *child){
+        this->children->append(child);
+    }
+    QList<MyCell *> * getChildenList(){
+        return this->children;
+    }
+
     int getApptID();
     int getApptStylistID();
     QString getApptStylistName();
@@ -51,6 +62,8 @@ public:
     QString getApptBeginTime();
     QString getApptEndTime();
 private:
+    MyCell *MyCellParent;
+    QList<MyCell *> *children;
     int apptID, apptStylistID;
     QString *apptServiceName,*apptStylistName, *apptDetails, *apptCustomerName, *apptBeginTime, *apptEndTime;
 };

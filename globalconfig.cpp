@@ -11,4 +11,7 @@ GlobalConfig::GlobalConfig(QObject *parent) :
     appointments_interval = 15;
     this->first_time = new QTime(7,0,0);
     this->last_time = new QTime(23,0,0);
+    this->verticalSectionSize = 60;
+    this->per_column_appts = 13;
+    this->default_column_size = 150;
 }

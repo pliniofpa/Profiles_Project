@@ -14,6 +14,9 @@ public:
     //Sets USA States List
     QStringList usa_states;
     QTime *first_time,*last_time;
+    int verticalSectionSize;
+    int per_column_appts;
+    int default_column_size;
 
 signals:
 
