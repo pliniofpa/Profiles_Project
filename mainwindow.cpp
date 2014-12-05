@@ -291,21 +291,28 @@ void MainWindow::create_employee_appt(){
         curTime = curTime.addSecs(global_config.appointments_interval*60);
         curTable->verticalHeader()->resizeSection(i,global_config.verticalSectionSize);
     }
-    for(int i=0;i<curTable->columnCount();++i){
-        //Equalize the size to all Horizontal Section
-        curTable->horizontalHeader()->resizeSection(i,global_config.default_column_size);
-        //Set Sections not resizable
-        curTable->horizontalHeader()->setSectionResizeMode(i,QHeaderView::Fixed);
-    }
     QSqlTableModel stylist_model;
     stylist_model.setTable("stylist");
     stylist_model.setFilter(QString("name='%1'").arg(this->ui->stylist_comboBox->currentText()));
     stylist_model.select();
     QSqlRecord stylist_record = stylist_model.record(0);
     QColor curColor;
+    int stylist_id=-1;
     if(!stylist_record.isEmpty()){
         curColor.setNamedColor(stylist_record.value("color").toString());
+        stylist_id = stylist_record.value("id").toInt();
     }
+    MyCell *curHeaderItem;
+    for(int i=0;i<curTable->columnCount();++i){
+        //Equalize the size to all Horizontal Section
+        curTable->horizontalHeader()->resizeSection(i,global_config.default_column_size);
+        //Set Sections not resizable
+        curTable->horizontalHeader()->setSectionResizeMode(i,QHeaderView::Fixed);
+        //Set Stylist ID on Header Items
+        curHeaderItem = new MyCell(this->ui->stylist_comboBox->currentText());
+        curHeaderItem->setApptStylistID(stylist_id);
+        curTable->setHorizontalHeaderItem(i,curHeaderItem);
+    }    
     QSqlTableModel appts_model;
     appts_model.setTable("appt_assoc_names");
     QString curDate = this->ui->employee_day_date_dateEdit->date().toString(global_config.date_format);
@@ -350,7 +357,7 @@ void MainWindow::create_employee_appt(){
         //Set Cell Color
         curItem->setBackgroundColor(curColor);
         //Set Item Flags
-        curItem->setFlags(Qt::ItemIsEnabled);
+        //curItem->setFlags(Qt::ItemIsEnabled);
         curTable->setItem(rowNumber,columnNumber,curItem);
         int numberOfCells = this->getApptDurationInMinutes(QTime::fromString(curApptTimeBeginString,time_format),QTime::fromString(curApptTimeEndString,time_format))/global_config.appointments_interval;
         if(rowNumber+(numberOfCells-1)>=global_config.per_column_appts){
@@ -359,6 +366,8 @@ void MainWindow::create_employee_appt(){
             int numberOfExtraColumnsSpan = numberOfExtraCellsSpan/global_config.per_column_appts;
             int numberOfRestingCellsSpan = numberOfExtraCellsSpan%global_config.per_column_appts;
             MyCell *newItem = new MyCell(QString("*** ").append(curItem->text()).append(" ***"));
+            //Add this item as chield of main item
+            curItem->addMyCellChild(newItem);
             newItem->setFlags(Qt::ItemIsEnabled);
             QColor newColor = curColor;
             newColor.setAlpha(128);
@@ -369,6 +378,8 @@ void MainWindow::create_employee_appt(){
                 int i;
                 for(i=0;i<numberOfExtraColumnsSpan;i++){
                     MyCell *newItem = new MyCell(QString("*** ").append(curItem->text()).append(" ***"));
+                    //Add this item as chield of main item
+                    curItem->addMyCellChild(newItem);
                     newItem->setFlags(Qt::ItemIsEnabled);
                     QColor newColor = curColor;
                     newColor.setAlpha(128);

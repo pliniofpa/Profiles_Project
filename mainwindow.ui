@@ -119,7 +119,7 @@
          </layout>
         </item>
         <item>
-         <widget class="QTableWidget" name="employee_day_tableWidget"/>
+         <widget class="MyQTableWidget" name="employee_day_tableWidget"/>
         </item>
        </layout>
       </widget>
@@ -133,7 +133,7 @@
      <x>0</x>
      <y>0</y>
      <width>983</width>
-     <height>26</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

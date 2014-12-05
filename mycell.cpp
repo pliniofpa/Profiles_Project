@@ -17,6 +17,8 @@ MyCell::MyCell(const QString &text)
     this->setTextAlignment(Qt::AlignCenter);
     this->setText(text);
     this->setFlags(this->flags()|Qt::ItemIsDragEnabled|Qt::ItemIsDropEnabled);
+    this->MyCellParent = 0;
+    this->children = new QList<MyCell *>;
 }
 
 void MyCell::setApptID(int id){

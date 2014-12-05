@@ -59,7 +59,7 @@
 static bool createConnection()
 {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName("C:/Qt_Projects/Profiles_Project/db_test.db");
+    db.setDatabaseName("C:/Users/andrp01/Qt_Projects/Profiles_Project/db_test.db");
     if (!db.open()) {
         QMessageBox::critical(0, qApp->tr("Cannot open database"),
             qApp->tr("Unable to establish a database connection.\n"

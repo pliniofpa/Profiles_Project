@@ -45,7 +45,12 @@ void MyQTableWidget::dropEvent(QDropEvent* event)
     MyCell *draggedColumnHeaderItem = (MyCell *)this->horizontalHeaderItem(draggedColumn);
     MyCell *destRowHeaderItem = (MyCell *)this->verticalHeaderItem(destItemRow);
     int stylistIDonDraggedColumn = draggedColumnHeaderItem->getApptStylistID();
-    QString beginTimeonDestColumn = destRowHeaderItem->text();
+    QString beginTimeonDestColumn;
+    if(destRowHeaderItem){
+        beginTimeonDestColumn = destRowHeaderItem->text();
+    }else{
+        beginTimeonDestColumn = this->item(destItemRow,draggedColumn-1)->text();
+    }
     //
     MyCell *destMyCellItem = (MyCell *)this->item(destItemRow,draggedColumn);
     int rowSpan = this->rowSpan(originMyCellItem->row(),originMyCellItem->column());
@@ -114,15 +119,22 @@ void MyQTableWidget::dropEvent(QDropEvent* event)
     QTableWidget::dropEvent(event);
     if(mainwindow){
         mainwindow->create_daily_appt();
+        mainwindow->create_employee_appt();
     }
 }
 void MyQTableWidget::dragEnterEvent(QDragEnterEvent *event)
 {
     //qDebug()<<"MyQTableWidget::dragEnterEvent";
     originMyCellItem = (MyCell*)this->itemAt(event->pos());
-    qDebug()<<"here";
+    this->setSpan(originMyCellItem->row(),originMyCellItem->column(),1,1);
     if(originMyCellItem){
-        qDebug()<<"there";
+        QList<MyCell *> *children = originMyCellItem->getChildenList();
+        for(int i=0;i<children->length();++i){
+            this->setSpan(children->at(i)->row(),children->at(i)->column(),1,1);
+            this->setItem(children->at(i)->row(),children->at(i)->column(),0);
+        }
+        children->clear();
+        this->selectionModel()->clear();
         QTableWidget::dragEnterEvent(event);
     }else{
         event->ignore();
