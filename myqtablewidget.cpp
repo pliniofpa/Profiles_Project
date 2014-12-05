@@ -125,9 +125,9 @@ void MyQTableWidget::dropEvent(QDropEvent* event)
 void MyQTableWidget::dragEnterEvent(QDragEnterEvent *event)
 {
     //qDebug()<<"MyQTableWidget::dragEnterEvent";
-    originMyCellItem = (MyCell*)this->itemAt(event->pos());
-    this->setSpan(originMyCellItem->row(),originMyCellItem->column(),1,1);
+    originMyCellItem = (MyCell*)this->itemAt(event->pos());    
     if(originMyCellItem){
+        this->setSpan(originMyCellItem->row(),originMyCellItem->column(),1,1);
         QList<MyCell *> *children = originMyCellItem->getChildenList();
         for(int i=0;i<children->length();++i){
             this->setSpan(children->at(i)->row(),children->at(i)->column(),1,1);

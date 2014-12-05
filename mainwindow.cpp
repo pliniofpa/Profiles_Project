@@ -36,6 +36,7 @@
 #include "apptdeleteconfirmationdialog.h"
 #include "ui_apptdeleteconfirmationdialog.h"
 #include <QSqlError>
+#include <KDReports/KDReports>
 struct GlobalConfig;
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -54,6 +55,7 @@ MainWindow::MainWindow(QWidget *parent) :
     this->create_employee_appt();
     this->create_daily_appt();
     this->ui->daily_appt_tableWidget->setMainWindowPointer(this);
+    this->ui->employee_day_tableWidget->setMainWindowPointer(this);
     this->ui->mainToolBar->setEnabled(false);
     //Sets Model for Combobox
     this->stylist_model = new QSqlTableModel();
@@ -63,13 +65,14 @@ MainWindow::MainWindow(QWidget *parent) :
     this->ui->stylist_comboBox->setModelColumn(stylist_model->fieldIndex("name"));
 }
 void MainWindow::genPdfUser(){
+    KDReports::Report report;
+    /*
     QPrinter printer;
     printer.setPaperSize(QPrinter::A4);
     QPrintDialog printer_dialog(&printer);
     if (printer_dialog.exec() == QDialog::Accepted) {
         QPainter painter(&printer);
         painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
-
         this->ui->daily_appt_tableWidget->render(&painter);
     }
 
@@ -84,6 +87,7 @@ void MainWindow::genPdfUser(){
     painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
     this->ui->daily_appt_tableWidget->render( &painter );
     painter.end();
+    */
 
 }
 void MainWindow::dailyApptselectionChanged(const QItemSelection & selected, const QItemSelection & deselected){
@@ -312,7 +316,7 @@ void MainWindow::create_employee_appt(){
         curHeaderItem = new MyCell(this->ui->stylist_comboBox->currentText());
         curHeaderItem->setApptStylistID(stylist_id);
         curTable->setHorizontalHeaderItem(i,curHeaderItem);
-    }    
+    }
     QSqlTableModel appts_model;
     appts_model.setTable("appt_assoc_names");
     QString curDate = this->ui->employee_day_date_dateEdit->date().toString(global_config.date_format);
@@ -386,7 +390,7 @@ void MainWindow::create_employee_appt(){
                     newItem->setBackgroundColor(newColor);
                     curTable->setItem(0,columnNumber+4+2*i,newItem);
                     if(numberOfExtraColumnsSpan-1>i){
-                          curTable->setSpan(0,columnNumber+4+2*i,global_config.per_column_appts,1);
+                        curTable->setSpan(0,columnNumber+4+2*i,global_config.per_column_appts,1);
                     }else{
                         curTable->setSpan(0,columnNumber+4+2*i,numberOfRestingCellsSpan,1);
                     }

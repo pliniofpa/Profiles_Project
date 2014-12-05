@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui sql
+QT       += core gui sql xml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 
@@ -79,3 +79,11 @@ RESOURCES += \
 
 OTHER_FILES += \
     resources.rc
+
+win32: LIBS += -L$$PWD/../../KDAB/KDReports-1.5.99/lib/ -lkdreportsd
+
+INCLUDEPATH += $$PWD/../../KDAB/KDReports-1.5.99/include
+DEPENDPATH += $$PWD/../../KDAB/KDReports-1.5.99/include
+
+win32:!win32-g++: PRE_TARGETDEPS += $$PWD/../../KDAB/KDReports-1.5.99/lib/kdreportsd.lib
+else:win32-g++: PRE_TARGETDEPS += $$PWD/../../KDAB/KDReports-1.5.99/lib/libkdreportsd.a
