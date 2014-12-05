@@ -6,7 +6,7 @@
 
 QT       += core gui sql
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 
 TARGET = Profiles_Project
 TEMPLATE = app
@@ -30,7 +30,12 @@ SOURCES += main.cpp\
     editstylistdialog.cpp \
     editappointmentdialog.cpp \
     edituserdialog.cpp \
-    editservicedialog.cpp
+    editservicedialog.cpp \
+    mycell.cpp \
+    myqtablewidget.cpp \
+    apptconflitingdialog.cpp \
+    richtextdelegate.cpp \
+    apptdeleteconfirmationdialog.cpp
 
 HEADERS  += mainwindow.h \
     newcustomerdialog.h \
@@ -47,7 +52,12 @@ HEADERS  += mainwindow.h \
     editstylistdialog.h \
     editappointmentdialog.h \
     edituserdialog.h \
-    editservicedialog.h
+    editservicedialog.h \
+    mycell.h \
+    myqtablewidget.h \
+    apptconflitingdialog.h \
+    richtextdelegate.h \
+    apptdeleteconfirmationdialog.h
 
 FORMS    += mainwindow.ui \
     newcustomerdialog.ui \
@@ -60,7 +70,9 @@ FORMS    += mainwindow.ui \
     editstylistdialog.ui \
     editappointmentdialog.ui \
     edituserdialog.ui \
-    editservicedialog.ui
+    editservicedialog.ui \
+    apptconflitingdialog.ui \
+    apptdeleteconfirmationdialog.ui
 
 RESOURCES += \
     resources.qrc

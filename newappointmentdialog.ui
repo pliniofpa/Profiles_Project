@@ -216,8 +216,11 @@
         </item>
         <item alignment="Qt::AlignRight">
          <widget class="QSpinBox" name="duration_spinBox">
+          <property name="minimum">
+           <number>15</number>
+          </property>
           <property name="maximum">
-           <number>180</number>
+           <number>500</number>
           </property>
           <property name="singleStep">
            <number>15</number>
