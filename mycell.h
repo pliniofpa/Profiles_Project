@@ -42,6 +42,9 @@ public:
     void setApptCustomerName(QString customerName);
     void setApptBeginTime (QString beginTime);
     void setApptEndTime (QString endTime);
+    void setMyCellParent(MyCell *parent){
+        this->MyCellParent = parent;
+    }
     int getApptID();
     int getApptStylistID();
     QString getApptStylistName();
@@ -51,6 +54,7 @@ public:
     QString getApptBeginTime();
     QString getApptEndTime();
 private:
+    MyCell *MyCellParent;
     int apptID, apptStylistID;
     QString *apptServiceName,*apptStylistName, *apptDetails, *apptCustomerName, *apptBeginTime, *apptEndTime;
 };

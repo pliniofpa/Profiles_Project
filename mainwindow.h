@@ -30,7 +30,8 @@ public slots:
     void showEditServiceDialog();
     void showEditUserDialog();
     void showEditAppointmentDialog();
-    void create_daily_appt();
+    void create_daily_appt();    
+    void create_employee_appt();
     //Exporter la liste des utilisateurs
     void genPdfUser();
     void dailyApptselectionChanged(const QItemSelection & selected, const QItemSelection & deselected);
@@ -43,7 +44,6 @@ private:
     GlobalConfig global_config;
     Ui::MainWindow *ui;    
     QSqlTableModel *stylist_model;
-    void create_employee_appt();    
     void make_connections();
     int getApptDurationInMinutes(QTime begin_time, QTime end_time);
 

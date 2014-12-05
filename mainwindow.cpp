@@ -45,13 +45,22 @@ MainWindow::MainWindow(QWidget *parent) :
     this->make_connections();
     //Set the date int the daily appointments date to current date
     this->ui->daily_appt_date_dateEdit->setDate(QDate::currentDate());
+    this->ui->employee_day_date_dateEdit->setDate(QDate::currentDate());
     //Set the interval of data from current date to 6 months from current date
     this->ui->daily_appt_date_dateEdit->setDateRange(QDate::currentDate().addYears(-5),QDate::currentDate().addMonths(6));
+    this->ui->employee_day_date_dateEdit->setDateRange(QDate::currentDate().addYears(-5),QDate::currentDate().addMonths(6));
+
     loadUerPreferences();
     this->create_employee_appt();
     this->create_daily_appt();
     this->ui->daily_appt_tableWidget->setMainWindowPointer(this);
     this->ui->mainToolBar->setEnabled(false);
+    //Sets Model for Combobox
+    this->stylist_model = new QSqlTableModel();
+    stylist_model->setTable("stylist");
+    stylist_model->select();
+    this->ui->stylist_comboBox->setModel(stylist_model);
+    this->ui->stylist_comboBox->setModelColumn(stylist_model->fieldIndex("name"));
 }
 void MainWindow::genPdfUser(){
     QPrinter printer;
@@ -247,8 +256,8 @@ void MainWindow::create_daily_appt(){
                     curTable->setItem(q,i,curItem);
                     //Set Span
                     QString time_format = global_config.time_format;
-                    int numberOfAppts = this->getApptDurationInMinutes(QTime::fromString(curApptTimeBeginString,time_format),QTime::fromString(curApptTimeEndString,time_format))/global_config.appointments_interval;
-                    curTable->setSpan(q,i,numberOfAppts,1);
+                    int numberOfCells = this->getApptDurationInMinutes(QTime::fromString(curApptTimeBeginString,time_format),QTime::fromString(curApptTimeEndString,time_format))/global_config.appointments_interval;
+                    curTable->setSpan(q,i,numberOfCells,1);
                 }
             }
         }
@@ -256,29 +265,29 @@ void MainWindow::create_daily_appt(){
     //Resize Rows
     //curTable->resizeRowsToContents();
     //Set Sections of Horizontal Headers as fixed
-    curTable->horizontalHeader()->setSectionsMovable(true);   
+    curTable->horizontalHeader()->setSectionsMovable(true);
 }
-void MainWindow::create_employee_appt(){
-    //Sets Model for Combobox
-    this->stylist_model = new QSqlTableModel();
-    stylist_model->setTable("stylist");
-    stylist_model->select();
-    this->ui->stylist_comboBox->setModel(stylist_model);
-    this->ui->stylist_comboBox->setModelColumn(stylist_model->fieldIndex("name"));
-
+void MainWindow::create_employee_appt(){    
     //Creates Table
     QTableWidget *curTable = this->ui->employee_day_tableWidget;
+    //Clean table
+    curTable->clear();
+    curTable->setColumnCount(0);
+    curTable->setRowCount(0);
     curTable->verticalHeader()->setVisible(false);
     curTable->horizontalHeader()->setVisible(false);
     QTime curTime(global_config.first_time->hour(),global_config.first_time->minute(),global_config.first_time->second());
     //QStringList vertical_headers_labels;
-    curTable->setRowCount(global_config.per_column_dates);
+    curTable->setRowCount(global_config.per_column_appts);
     for(int i=0;curTime <= (*global_config.last_time);++i){
-        curTable->setColumnCount(2+((int)(i/global_config.per_column_dates))*2);
+        curTable->setColumnCount(2+((int)(i/global_config.per_column_appts))*2);
         MyCell *curItem = new MyCell(curTime.toString(global_config.time_format));
         curItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
         curItem->setFlags(Qt::ItemIsEnabled);
-        curTable->setItem(i%global_config.per_column_dates,(int)(i/global_config.per_column_dates)*2,curItem);
+        QFont font = curItem->font();
+        font.setBold(true);
+        curItem->setFont(font);
+        curTable->setItem(i%global_config.per_column_appts,(int)(i/global_config.per_column_appts)*2,curItem);
         curTime = curTime.addSecs(global_config.appointments_interval*60);
         curTable->verticalHeader()->resizeSection(i,global_config.verticalSectionSize);
     }
@@ -288,6 +297,97 @@ void MainWindow::create_employee_appt(){
         //Set Sections not resizable
         curTable->horizontalHeader()->setSectionResizeMode(i,QHeaderView::Fixed);
     }
+    QSqlTableModel stylist_model;
+    stylist_model.setTable("stylist");
+    stylist_model.setFilter(QString("name='%1'").arg(this->ui->stylist_comboBox->currentText()));
+    stylist_model.select();
+    QSqlRecord stylist_record = stylist_model.record(0);
+    QColor curColor;
+    if(!stylist_record.isEmpty()){
+        curColor.setNamedColor(stylist_record.value("color").toString());
+    }
+    QSqlTableModel appts_model;
+    appts_model.setTable("appt_assoc_names");
+    QString curDate = this->ui->employee_day_date_dateEdit->date().toString(global_config.date_format);
+    appts_model.setFilter(QString("date='%1' AND stylist_name='%2'").arg(curDate).arg(this->ui->stylist_comboBox->currentText()));
+    appts_model.select();
+    QString curApptTimeBeginString,curApptStylistName, curApptTimeEndString, curApptCustomerName,curApptServiceName,curApptDetails;
+    int curApptID, curApptStylistID;
+    QString time_format = global_config.time_format;
+    for(int p=0;p<appts_model.rowCount();p++){
+        curApptTimeBeginString = appts_model.record(p).value("time_begin").toString();
+        curApptTimeEndString = appts_model.record(p).value("time_end").toString();
+        int rowNumber = this->getApptDurationInMinutes(*global_config.first_time,QTime::fromString(curApptTimeBeginString,time_format))/global_config.appointments_interval;
+        int columnNumber = 1;
+        if(rowNumber>=global_config.per_column_appts){
+            columnNumber = ((int)(rowNumber/global_config.per_column_appts))*2+1;
+            rowNumber = rowNumber%global_config.per_column_appts;
+        }
+        curApptDetails = appts_model.record(p).value("details").toString();
+        curApptCustomerName = appts_model.record(p).value("customer_name").toString();
+        curApptServiceName = appts_model.record(p).value("service_name").toString();
+        curApptStylistName = appts_model.record(p).value("stylist_name").toString();
+        curApptID = appts_model.record(p).value("id").toInt();
+        curApptStylistID = appts_model.record(p).value("stylist_id").toInt();
+        QString curText = "Customer: "+curApptCustomerName+" Service: "+curApptServiceName+" Details: "+curApptDetails;
+        MyCell *curItem = new MyCell(curText);
+        //Set Appointment ID on curItem
+        curItem->setApptID(curApptID);
+        //Set appointment Stylist ID on CurItem
+        curItem->setApptStylistID(curApptStylistID);
+        //Set appointment Stylist Name on CurItem
+        curItem->setApptStylistName(curApptStylistName);
+        //Set appointment Customer Name
+        curItem->setApptCustomerName(curApptCustomerName);
+        //Set appointment Service Name
+        curItem->setApptServiceName(curApptServiceName);
+        //Set appointment Details
+        curItem->setApptDetails(curApptDetails);
+        //Set appointment Begin Time
+        curItem->setApptBeginTime(curApptTimeBeginString);
+        //Set appointment End Time
+        curItem->setApptEndTime(curApptTimeEndString);
+        //Set Cell Color
+        curItem->setBackgroundColor(curColor);
+        //Set Item Flags
+        curItem->setFlags(Qt::ItemIsEnabled);
+        curTable->setItem(rowNumber,columnNumber,curItem);
+        int numberOfCells = this->getApptDurationInMinutes(QTime::fromString(curApptTimeBeginString,time_format),QTime::fromString(curApptTimeEndString,time_format))/global_config.appointments_interval;
+        if(rowNumber+(numberOfCells-1)>=global_config.per_column_appts){
+            curTable->setSpan(rowNumber,columnNumber,(global_config.per_column_appts-rowNumber),1);
+            int numberOfExtraCellsSpan = numberOfCells - (global_config.per_column_appts-rowNumber);
+            int numberOfExtraColumnsSpan = numberOfExtraCellsSpan/global_config.per_column_appts;
+            int numberOfRestingCellsSpan = numberOfExtraCellsSpan%global_config.per_column_appts;
+            MyCell *newItem = new MyCell(QString("*** ").append(curItem->text()).append(" ***"));
+            newItem->setFlags(Qt::ItemIsEnabled);
+            QColor newColor = curColor;
+            newColor.setAlpha(128);
+            newItem->setBackgroundColor(newColor);
+            curTable->setItem(0,columnNumber+2,newItem);
+            if(numberOfExtraColumnsSpan){
+                curTable->setSpan(0,columnNumber+2,global_config.per_column_appts,1);
+                int i;
+                for(i=0;i<numberOfExtraColumnsSpan;i++){
+                    MyCell *newItem = new MyCell(QString("*** ").append(curItem->text()).append(" ***"));
+                    newItem->setFlags(Qt::ItemIsEnabled);
+                    QColor newColor = curColor;
+                    newColor.setAlpha(128);
+                    newItem->setBackgroundColor(newColor);
+                    curTable->setItem(0,columnNumber+4+2*i,newItem);
+                    if(numberOfExtraColumnsSpan-1>i){
+                          curTable->setSpan(0,columnNumber+4+2*i,global_config.per_column_appts,1);
+                    }else{
+                        curTable->setSpan(0,columnNumber+4+2*i,numberOfRestingCellsSpan,1);
+                    }
+                }
+            }else{
+                curTable->setSpan(0,columnNumber+2,numberOfRestingCellsSpan,1);
+            }
+        }else{
+            curTable->setSpan(rowNumber,columnNumber,numberOfCells,1);
+        }
+    }
+
 }
 
 void MainWindow::showCreateCustomerDialog(){
@@ -460,11 +560,15 @@ void MainWindow::make_connections(){
     QObject::connect(this->ui->action_edit_Services,SIGNAL(triggered()),this,SLOT(showEditServiceDialog()));
     QObject::connect(this->ui->action_edit_Appointments,SIGNAL(triggered()),this,SLOT(showEditAppointmentDialog()));
     QObject::connect(this->ui->daily_appt_date_dateEdit,SIGNAL(dateChanged(QDate)),this,SLOT(create_daily_appt()));
+    QObject::connect(this->ui->employee_day_date_dateEdit,SIGNAL(dateChanged(QDate)),this,SLOT(create_employee_appt()));
+    QObject::connect(this->ui->stylist_comboBox,SIGNAL(currentTextChanged(QString)),this,SLOT(create_employee_appt()));
+    QObject::connect(this->ui->tabWidget,SIGNAL(currentChanged(int)),this,SLOT(create_employee_appt()));
     QObject::connect(this->ui->actionAdd_Break,SIGNAL(triggered()),this,SLOT(genPdfUser()));
     QObject::connect(this->ui->daily_appt_tableWidget->selectionModel(),SIGNAL(selectionChanged(QItemSelection,QItemSelection)),this,SLOT(dailyApptselectionChanged(QItemSelection,QItemSelection)));
     QObject::connect(this->ui->actionDelete_Record,SIGNAL(triggered()),this,SLOT(deleteSelectedAppt()));
     QObject::connect(this->ui->actionEdit_Record,SIGNAL(triggered()),this,SLOT(editSelectedAppt()));
     QObject::connect(this->ui->actionAdd,SIGNAL(triggered()),this,SLOT(addAppt()));
+
 
 }
 void MainWindow::showEditCustomerDialog(){
