@@ -35,8 +35,13 @@
 #include <QPainter>
 #include "apptdeleteconfirmationdialog.h"
 #include "ui_apptdeleteconfirmationdialog.h"
+#include "emailconfig.h"
 #include <QSqlError>
 #include <KDReports/KDReports>
+#include <QMessageBox>
+#include "smtp/smtp.h"
+#include "companyconfigdialog.h"
+#include "ui_companyconfigdialog.h"
 struct GlobalConfig;
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -56,16 +61,80 @@ MainWindow::MainWindow(QWidget *parent) :
     this->create_daily_appt();
     this->ui->daily_appt_tableWidget->setMainWindowPointer(this);
     this->ui->employee_day_tableWidget->setMainWindowPointer(this);
-    this->ui->mainToolBar->setEnabled(false);
+    //this->ui->mainToolBar->setEnabled(false);
+    this->ui->actionAdd->setEnabled(false);
+    this->ui->actionAdd_Break->setEnabled(false);
+    this->ui->actionDelete_Record->setEnabled(false);
+    this->ui->actionEdit_Record->setEnabled(false);
     //Sets Model for Combobox
     this->stylist_model = new QSqlTableModel();
     stylist_model->setTable("stylist");
     stylist_model->select();
     this->ui->stylist_comboBox->setModel(stylist_model);
     this->ui->stylist_comboBox->setModelColumn(stylist_model->fieldIndex("name"));
+    updateCompanyInformation();
 }
+void MainWindow::showCompanyConfigDialog(){
+    CompanyConfigDialog dialog;
+    //Set USA states list to State Combobox and City
+    dialog.ui->state_comboBox->addItems(global_config.usa_states);
+    dialog.ui->address_lineEdit_5->setText(this->companyAddress);
+    dialog.ui->city_lineEdit_7->setText(this->companyCity);
+    dialog.ui->email_lineEdit_7->setText(this->companyEmail);
+    if(!this->companyLogoFile.isEmpty()){
+        dialog.ui->logo_label->setPixmap(QPixmap(this->companyLogoFile));
+    }
+    dialog.ui->phone_lineEdit_6->setText(this->companyPhone);
+    dialog.ui->slogan_lineEdit_7->setText(this->companySlogan);
+    dialog.ui->name_lineEdit_6->setText(this->companyName);
+    dialog.ui->state_comboBox->setCurrentText(this->companyState);
+    if(dialog.exec()){
+        this->companyAddress = dialog.ui->address_lineEdit_5->text();
+        this->companyCity = dialog.ui->city_lineEdit_7->text();
+        this->companyEmail = dialog.ui->email_lineEdit_7->text();
+        this->companyLogoFile = dialog.logoFileName;
+        this->companyName = dialog.ui->name_lineEdit_6->text();
+        this->companyPhone = dialog.ui->phone_lineEdit_6->text();
+        this->companySlogan = dialog.ui->slogan_lineEdit_7->text();
+        this->companyState = dialog.ui->state_comboBox->currentText();
+        updateCompanyInformation();
+    }
+}
+void MainWindow::updateCompanyInformation(){
+    this->ui->company_address_label_5->setText(this->companyAddress);
+    this->ui->company_name_label_5->setText(this->companyName);
+    this->ui->company_phone_label_7->setText(this->companyPhone);
+    this->ui->company_slogan_label_7->setText(this->companySlogan);
+    this->ui->company_email_label_4->setText(this->companyEmail);
+    this->ui->company_state_city_label_4->setText(this->companyState+" - "+this->companyCity);
+    if(!this->companyLogoFile.isEmpty()){
+        this->ui->company_logo_label_4->setPixmap(QPixmap(this->companyLogoFile));
+
+    }
+}
+
 void MainWindow::genPdfUser(){
     KDReports::Report report;
+    QSqlTableModel *appt_assoc_names_model = new QSqlTableModel();
+    appt_assoc_names_model->setTable("appt_assoc_names");
+    //Define Headers
+    //appt_assoc_names_model->setHeaderData(appt_assoc_names_model->fieldIndex("id"), Qt::Horizontal, tr("#"));
+    appt_assoc_names_model->setHeaderData(appt_assoc_names_model->fieldIndex("time_begin"), Qt::Horizontal, tr("Start Time"));
+    appt_assoc_names_model->setHeaderData(appt_assoc_names_model->fieldIndex("details"), Qt::Horizontal, tr("Details"));
+    appt_assoc_names_model->setHeaderData(appt_assoc_names_model->fieldIndex("date"), Qt::Horizontal, tr("Date"));
+    appt_assoc_names_model->setHeaderData(appt_assoc_names_model->fieldIndex("time_end"), Qt::Horizontal, tr("End Time"));
+    appt_assoc_names_model->setHeaderData(appt_assoc_names_model->fieldIndex("customer_name"), Qt::Horizontal, tr("Customer"));
+    appt_assoc_names_model->setHeaderData(appt_assoc_names_model->fieldIndex("stylist_name"), Qt::Horizontal, tr("Stylist"));
+    appt_assoc_names_model->setHeaderData(appt_assoc_names_model->fieldIndex("service_name"), Qt::Horizontal, tr("Service"));
+    appt_assoc_names_model->setHeaderData(appt_assoc_names_model->fieldIndex("id"), Qt::Horizontal, tr("#"));
+    //appt_assoc_names_model->setEditStrategy(QSqlTableModel::OnManualSubmit);
+    appt_assoc_names_model->select();
+    // Add a text element for the title
+    report.addElement( KDReports::AutoTableElement( appt_assoc_names_model ) );
+    // show a print preview
+    KDReports::PreviewDialog preview( &report );
+    preview.exec();
+
     /*
     QPrinter printer;
     printer.setPaperSize(QPrinter::A4);
@@ -90,12 +159,9 @@ void MainWindow::genPdfUser(){
     */
 
 }
-void MainWindow::dailyApptselectionChanged(const QItemSelection & selected, const QItemSelection & deselected){
+void MainWindow::tableSelectionChanged(const QItemSelection & selected, const QItemSelection & deselected){
     if(selected.indexes().length()){
-        this->ui->mainToolBar->setEnabled(true);
-        //for(int i=0;i<selected.indexes().length();i++){
-        //qDebug()<<selected.indexes().at(0).data().toString();
-        //qDebug()<<selected.indexes().at(0).row()<<selected.indexes().at(0).column();
+        //this->ui->mainToolBar->setEnabled(true);
         if(selected.indexes().at(0).data().isValid()){
             this->ui->actionDelete_Record->setEnabled(true);
             this->ui->actionEdit_Record->setEnabled(true);
@@ -110,11 +176,42 @@ void MainWindow::dailyApptselectionChanged(const QItemSelection & selected, cons
         //}
 
     }else{
-        this->ui->mainToolBar->setEnabled(false);
+        //this->ui->mainToolBar->setEnabled(false);
+    }
+}
+void MainWindow::mailSent(QString status)
+{
+    if(status == "Message sent")
+        QMessageBox::warning( 0, this->windowTitle(), tr( "Message sent!\n\n" ) );
+}
+void MainWindow::showEmailConfigDialog(){
+    emailConfig config;
+    config.setServerName(this->serverName);
+    config.setPort(this->port);
+    config.setUserName(this->username);
+    config.setPassword(this->password);
+    config.setRcpt(this->rcpt);
+    config.setSubject(this->subject);
+    config.setMessage(this->message);
+    config.setFileDirectory(this->fileDir);
+    if(config.exec()){
+        this->serverName = config.getServerName();
+        this->port = config.getPort();
+        this->username = config.getUserName();
+        this->password = config.getPassword();
+        this->rcpt = config.getRcpt();
+        this->subject = config.getSubject();
+        this->message = config.getMessage();
+        this->fileDir = config.getFileDirectory();
     }
 }
 void MainWindow::deleteSelectedAppt(){
-    MyQTableWidget *curTable = this->ui->daily_appt_tableWidget;
+    MyQTableWidget *curTable;
+    if(this->ui->tabWidget->currentIndex()==0){
+        curTable = this->ui->daily_appt_tableWidget;
+    }else{
+        curTable = this->ui->employee_day_tableWidget;
+    }
     MyCell *selectedItem = (MyCell*)curTable->selectedItems().at(0);
     if(selectedItem){
         ApptDeleteConfirmationDialog deleteDialog(this);
@@ -146,16 +243,23 @@ void MainWindow::deleteSelectedAppt(){
     }
 }
 void MainWindow::editSelectedAppt(){
-    MyQTableWidget *curTable = this->ui->daily_appt_tableWidget;
+    MyQTableWidget *curTable;
+    if(this->ui->tabWidget->currentIndex()==0){
+        curTable = this->ui->daily_appt_tableWidget;
+
+    }else{
+        curTable = this->ui->employee_day_tableWidget;
+    }
     MyCell *selectedItem = (MyCell*)curTable->selectedItems().at(0);
-    qDebug()<<selectedItem->row();
-    qDebug()<<selectedItem->column();
+    //qDebug()<<selectedItem->row();
+    //qDebug()<<selectedItem->column();
     if(selectedItem){
         int apptID = selectedItem->getApptID();
         EditAppointmentDialog editDialog(this);
         editDialog.editApptbyID(apptID);
         editDialog.exec();
         this->create_daily_appt();
+        this->create_employee_appt();
     }
 }
 
@@ -498,10 +602,20 @@ void MainWindow::addAppt(){
     //Configure Dates and Times
     dialog.ui->dateEdit->setDate(this->ui->daily_appt_date_dateEdit->date());
     //Set Params of new Appointment for selected column
-    MyQTableWidget *curTable = this->ui->daily_appt_tableWidget;
-    int selectedRow = curTable->selectionModel()->selectedIndexes().at(0).row();
-    int selectedColumn = curTable->selectionModel()->selectedIndexes().at(0).column();
-    QString beginTimeString = curTable->verticalHeaderItem(selectedRow)->text();
+    MyQTableWidget *curTable;
+    int selectedRow,selectedColumn;
+    QString beginTimeString;
+    if(this->ui->tabWidget->currentIndex()==0){
+        curTable = this->ui->daily_appt_tableWidget;
+        selectedRow = curTable->selectionModel()->selectedIndexes().at(0).row();
+        selectedColumn = curTable->selectionModel()->selectedIndexes().at(0).column();
+        beginTimeString = curTable->verticalHeaderItem(selectedRow)->text();
+    }else{
+        curTable = this->ui->employee_day_tableWidget;
+        selectedRow = curTable->selectionModel()->selectedIndexes().at(0).row();
+        selectedColumn = curTable->selectionModel()->selectedIndexes().at(0).column();
+        beginTimeString = curTable->item(selectedRow,selectedColumn-1)->text();
+    }
     QString stylistName = curTable->horizontalHeaderItem(selectedColumn)->text();
     dialog.ui->stylist_comboBox->setCurrentText(stylistName);
     dialog.ui->timebegin_timeEdit->setTime(QTime::fromString(beginTimeString,global_config.time_format));
@@ -545,6 +659,7 @@ void MainWindow::addAppt(){
             qDebug()<<QString("Appointment Saved. ID: %1").arg(appointment_id);
             //Update the Daily Appoitments Table
             this->create_daily_appt();
+            this->create_employee_appt();
         }
         return;
     }
@@ -577,15 +692,49 @@ void MainWindow::make_connections(){
     QObject::connect(this->ui->daily_appt_date_dateEdit,SIGNAL(dateChanged(QDate)),this,SLOT(create_daily_appt()));
     QObject::connect(this->ui->employee_day_date_dateEdit,SIGNAL(dateChanged(QDate)),this,SLOT(create_employee_appt()));
     QObject::connect(this->ui->stylist_comboBox,SIGNAL(currentTextChanged(QString)),this,SLOT(create_employee_appt()));
-    QObject::connect(this->ui->tabWidget,SIGNAL(currentChanged(int)),this,SLOT(create_employee_appt()));
+    QObject::connect(this->ui->tabWidget,SIGNAL(currentChanged(int)),this,SLOT(tabChanged(int)));
     QObject::connect(this->ui->actionAdd_Break,SIGNAL(triggered()),this,SLOT(genPdfUser()));
-    QObject::connect(this->ui->daily_appt_tableWidget->selectionModel(),SIGNAL(selectionChanged(QItemSelection,QItemSelection)),this,SLOT(dailyApptselectionChanged(QItemSelection,QItemSelection)));
+    QObject::connect(this->ui->daily_appt_tableWidget->selectionModel(),SIGNAL(selectionChanged(QItemSelection,QItemSelection)),this,SLOT(tableSelectionChanged(QItemSelection,QItemSelection)));
+    QObject::connect(this->ui->employee_day_tableWidget->selectionModel(),SIGNAL(selectionChanged(QItemSelection,QItemSelection)),this,SLOT(tableSelectionChanged(QItemSelection,QItemSelection)));
     QObject::connect(this->ui->actionDelete_Record,SIGNAL(triggered()),this,SLOT(deleteSelectedAppt()));
     QObject::connect(this->ui->actionEdit_Record,SIGNAL(triggered()),this,SLOT(editSelectedAppt()));
     QObject::connect(this->ui->actionAdd,SIGNAL(triggered()),this,SLOT(addAppt()));
-
+    QObject::connect(this->ui->actionSend_Email,SIGNAL(triggered()),this,SLOT(SendEmail()));
+    QObject::connect(this->ui->actionEmail,SIGNAL(triggered()),this,SLOT(showEmailConfigDialog()));
+    QObject::connect(this->ui->actionCompany,SIGNAL(triggered()),this,SLOT(showCompanyConfigDialog()));
 
 }
+void MainWindow::SendEmail(){
+    QStringList files;
+    QFile tmp_file;
+    tmp_file.setFileName(this->fileName);
+    if(tmp_file.open(QIODevice::ReadOnly)){
+        files<<this->fileName;
+        tmp_file.close();
+    }
+    //qDebug()<<files;
+    Smtp* smtp = new Smtp(this->username, this->password, this->serverName, this->port);
+    connect(smtp, SIGNAL(status(QString)), this, SLOT(mailSent(QString)));
+    QObject::connect(smtp,SIGNAL(log(QString)),this,SLOT(updateLog(QString)));
+    this->ui->statusBar->showMessage("Sending Email...");
+    if(!files.isEmpty())
+        smtp->sendMail(this->username, this->rcpt , this->subject,this->message, files );
+    else
+        smtp->sendMail(this->username, this->rcpt , this->subject,this->message);
+    this->fileName="";
+    this->ui->statusBar->clearMessage();
+}
+
+void MainWindow::tabChanged(int current){
+    this->ui->daily_appt_tableWidget->selectionModel()->clear();
+    this->ui->employee_day_tableWidget->selectionModel()->clear();
+    if(current==0){
+        create_daily_appt();
+    }else{
+        create_employee_appt();
+    }
+}
+
 void MainWindow::showEditCustomerDialog(){
     EditCustumerDialog dialog;
     dialog.exec();
@@ -622,11 +771,64 @@ void MainWindow::saveUserPreferences(){
     toSave.beginGroup("MainWindow");
     toSave.setValue("geometry", saveGeometry());
     toSave.endGroup();
+    toSave.beginGroup("EmailConfig");
+    toSave.setValue("serverName",this->serverName);
+    toSave.sync();
+    toSave.setValue("serverPort",this->port);
+    toSave.sync();
+    toSave.setValue("userName",this->username);
+    toSave.sync();
+    toSave.setValue("password",this->password);
+    toSave.sync();
+    toSave.setValue("recipient",this->rcpt);
+    toSave.sync();
+    toSave.setValue("subject",this->subject);
+    toSave.sync();
+    toSave.setValue("message",this->message);
+    toSave.sync();
+    toSave.endGroup();
+    toSave.beginGroup("CompanyConfig");
+    toSave.setValue("companyName",this->companyName);
+    toSave.sync();
+    toSave.setValue("companyAddress",this->companyAddress);
+    toSave.sync();
+    toSave.setValue("companyCity",this->companyCity);
+    toSave.sync();
+    toSave.setValue("companyEmail",this->companyEmail);
+    toSave.sync();
+    toSave.setValue("companyLogoFile",this->companyLogoFile);
+    toSave.sync();
+    toSave.setValue("companyPhone",this->companyPhone);
+    toSave.sync();
+    toSave.setValue("companySlogan",this->companySlogan);
+    toSave.sync();
+    toSave.setValue("companyState",this->companyState);
+    toSave.sync();
+    toSave.endGroup();
 }
 void MainWindow::loadUerPreferences(){
     QSettings toLoad(QSettings::IniFormat,QSettings::UserScope,VER_COMPANYNAME_STR,VER_FILEDESCRIPTION_STR);
     toLoad.beginGroup("MainWindow");
     this->restoreGeometry(toLoad.value("geometry").toByteArray());
+    toLoad.endGroup();
+    toLoad.beginGroup("EmailConfig");
+    this->serverName = toLoad.value("servername","").toString();
+    this->port = toLoad.value("serverPort",465).toInt();
+    this->username = toLoad.value("username","").toString();
+    this->password = toLoad.value("password","").toString();
+    this->rcpt = toLoad.value("repipient","").toString();
+    this->subject = toLoad.value("subject","Tech Scheduler Notification Email").toString();
+    this->message = toLoad.value("message","").toString();
+    toLoad.endGroup();
+    toLoad.beginGroup("CompanyConfig");
+    this->companyAddress = toLoad.value("companyAddress","").toString();
+    this->companyCity = toLoad.value("companyCity","Fort Wayne").toString();
+    this->companyName = toLoad.value("companyName","").toString();
+    this->companyEmail = toLoad.value("companyEmail","techscheduler@indianatech.net").toString();
+    this->companyLogoFile = toLoad.value("companyLogoFile","").toString();
+    this->companyPhone = toLoad.value("companyPhone","").toString();
+    this->companySlogan = toLoad.value("companySlogan","").toString();
+    this->companyState = toLoad.value("companyState","").toString();
     toLoad.endGroup();
 }
 void MainWindow::closeEvent(QCloseEvent *event)

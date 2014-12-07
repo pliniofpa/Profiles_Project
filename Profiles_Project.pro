@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui sql xml
+QT       += core gui sql xml network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 
@@ -35,7 +35,10 @@ SOURCES += main.cpp\
     myqtablewidget.cpp \
     apptconflitingdialog.cpp \
     richtextdelegate.cpp \
-    apptdeleteconfirmationdialog.cpp
+    apptdeleteconfirmationdialog.cpp \
+    smtp/smtp.cpp \
+    emailconfig.cpp \
+    companyconfigdialog.cpp
 
 HEADERS  += mainwindow.h \
     newcustomerdialog.h \
@@ -57,7 +60,10 @@ HEADERS  += mainwindow.h \
     myqtablewidget.h \
     apptconflitingdialog.h \
     richtextdelegate.h \
-    apptdeleteconfirmationdialog.h
+    apptdeleteconfirmationdialog.h \
+    smtp/smtp.h \
+    emailconfig.h \
+    companyconfigdialog.h
 
 FORMS    += mainwindow.ui \
     newcustomerdialog.ui \
@@ -72,7 +78,9 @@ FORMS    += mainwindow.ui \
     edituserdialog.ui \
     editservicedialog.ui \
     apptconflitingdialog.ui \
-    apptdeleteconfirmationdialog.ui
+    apptdeleteconfirmationdialog.ui \
+    emailconfig.ui \
+    companyconfigdialog.ui
 
 RESOURCES += \
     resources.qrc
@@ -80,10 +88,8 @@ RESOURCES += \
 OTHER_FILES += \
     resources.rc
 
-win32: LIBS += -L$$PWD/../../KDAB/KDReports-1.5.99/lib/ -lkdreportsd
+
+win32: LIBS += -L$$PWD/../../KDAB/KDReports-1.5.99/lib/ -lkdreportsd1
 
 INCLUDEPATH += $$PWD/../../KDAB/KDReports-1.5.99/include
 DEPENDPATH += $$PWD/../../KDAB/KDReports-1.5.99/include
-
-win32:!win32-g++: PRE_TARGETDEPS += $$PWD/../../KDAB/KDReports-1.5.99/lib/kdreportsd.lib
-else:win32-g++: PRE_TARGETDEPS += $$PWD/../../KDAB/KDReports-1.5.99/lib/libkdreportsd.a

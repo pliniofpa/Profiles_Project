@@ -34,10 +34,16 @@ public slots:
     void create_employee_appt();
     //Exporter la liste des utilisateurs
     void genPdfUser();
-    void dailyApptselectionChanged(const QItemSelection & selected, const QItemSelection & deselected);
+    void tableSelectionChanged(const QItemSelection & selected, const QItemSelection & deselected);
     void deleteSelectedAppt();
     void editSelectedAppt();
     void addAppt();
+    void tabChanged(int current);
+    void SendEmail();
+    void showEmailConfigDialog();
+    void mailSent(QString status);
+    void showCompanyConfigDialog();
+    void updateCompanyInformation();
 
 
 private:
@@ -46,6 +52,11 @@ private:
     QSqlTableModel *stylist_model;
     void make_connections();
     int getApptDurationInMinutes(QTime begin_time, QTime end_time);
+    //About Email
+    QString serverName,username,password,subject,message,rcpt,fileDir,fileName;
+    int port;
+    //About Company
+    QString companyName,companyPhone,companySlogan,companyAddress,companyState,companyCity,companyEmail,companyLogoFile;
 
     //Save/Load User Preferences members
     /**
