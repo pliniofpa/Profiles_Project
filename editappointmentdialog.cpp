@@ -64,6 +64,10 @@ EditAppointmentDialog::EditAppointmentDialog(QWidget *parent) :
     appt_assoc_names_model->setHeaderData(appt_assoc_names_model->fieldIndex("stylist_name"), Qt::Horizontal, tr("Stylist"));
     appt_assoc_names_model->setHeaderData(appt_assoc_names_model->fieldIndex("service_name"), Qt::Horizontal, tr("Service"));
     appt_assoc_names_model->setHeaderData(appt_assoc_names_model->fieldIndex("id"), Qt::Horizontal, tr("#"));
+    //Hides some columns on Table View
+    this->ui->appointment_tableView->hideColumn(appt_assoc_names_model->fieldIndex("customer_id"));
+    this->ui->appointment_tableView->hideColumn(appt_assoc_names_model->fieldIndex("stylist_id"));
+    this->ui->appointment_tableView->hideColumn(appt_assoc_names_model->fieldIndex("service_id"));
     //appt_assoc_names_model->setEditStrategy(QSqlTableModel::OnManualSubmit);
     appt_assoc_names_model->select();
     //Sets Model on the Table View

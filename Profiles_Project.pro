@@ -39,7 +39,8 @@ SOURCES += main.cpp\
     smtp/smtp.cpp \
     emailconfig.cpp \
     companyconfigdialog.cpp \
-    aboutdialog.cpp
+    aboutdialog.cpp \
+    apptbystylistreportdialog.cpp
 
 HEADERS  += mainwindow.h \
     newcustomerdialog.h \
@@ -65,7 +66,8 @@ HEADERS  += mainwindow.h \
     smtp/smtp.h \
     emailconfig.h \
     companyconfigdialog.h \
-    aboutdialog.h
+    aboutdialog.h \
+    apptbystylistreportdialog.h
 
 FORMS    += mainwindow.ui \
     newcustomerdialog.ui \
@@ -83,7 +85,8 @@ FORMS    += mainwindow.ui \
     apptdeleteconfirmationdialog.ui \
     emailconfig.ui \
     companyconfigdialog.ui \
-    aboutdialog.ui
+    aboutdialog.ui \
+    apptbystylistreportdialog.ui
 
 RESOURCES += \
     resources.qrc
@@ -92,7 +95,7 @@ OTHER_FILES += \
     resources.rc
 
 
-win32: LIBS += -L$$PWD/../../KDAB/KDReports-1.5.99/lib/ -lkdreportsd1
+win32: LIBS += -L$$PWD/KDAB/KDReports-1.5.99/lib/ -lkdreportsd1
 
-INCLUDEPATH += $$PWD/../../KDAB/KDReports-1.5.99/include
-DEPENDPATH += $$PWD/../../KDAB/KDReports-1.5.99/include
+INCLUDEPATH += $$PWD/KDAB/KDReports-1.5.99/include
+DEPENDPATH += $$PWD/KDAB/KDReports-1.5.99/include

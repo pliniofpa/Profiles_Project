@@ -43,6 +43,8 @@
 #include "companyconfigdialog.h"
 #include "ui_companyconfigdialog.h"
 #include "aboutdialog.h"
+#include "apptbystylistreportdialog.h"
+#include "ui_apptbystylistreportdialog.h"
 struct GlobalConfig;
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -114,11 +116,14 @@ void MainWindow::updateCompanyInformation(){
     }
 }
 
-QString MainWindow::genPdfUser(){
-    /*
-    KDReports::Report report;
-    QSqlTableModel *appt_assoc_names_model = new QSqlTableModel();
-    appt_assoc_names_model->setTable("appt_assoc_names");
+QString MainWindow::generateApptbyStylistReport(QString date, QString stylist_name, QString pdfFileName=QString()){
+    QSqlTableModel *appt_assoc_names_model = new QSqlTableModel;
+    appt_assoc_names_model->setTable("appt_by_stylist_report_view");
+    QString curDate = date;
+    QString curStylistName = stylist_name;
+    //qDebug()<<curDate;
+    appt_assoc_names_model->setFilter(QString("date='%1' AND stylist_name='%2'").arg(curDate).arg(curStylistName));
+    appt_assoc_names_model->setSort(appt_assoc_names_model->fieldIndex("time_begin"),Qt::AscendingOrder);
     //Define Headers
     //appt_assoc_names_model->setHeaderData(appt_assoc_names_model->fieldIndex("id"), Qt::Horizontal, tr("#"));
     appt_assoc_names_model->setHeaderData(appt_assoc_names_model->fieldIndex("time_begin"), Qt::Horizontal, tr("Start Time"));
@@ -129,52 +134,78 @@ QString MainWindow::genPdfUser(){
     appt_assoc_names_model->setHeaderData(appt_assoc_names_model->fieldIndex("stylist_name"), Qt::Horizontal, tr("Stylist"));
     appt_assoc_names_model->setHeaderData(appt_assoc_names_model->fieldIndex("service_name"), Qt::Horizontal, tr("Service"));
     appt_assoc_names_model->setHeaderData(appt_assoc_names_model->fieldIndex("id"), Qt::Horizontal, tr("#"));
-    //appt_assoc_names_model->setEditStrategy(QSqlTableModel::OnManualSubmit);
     appt_assoc_names_model->select();
-    // Add a text element for the title
-    report.addElement( KDReports::AutoTableElement( appt_assoc_names_model ) );
-    // show a print preview
-    KDReports::PreviewDialog preview( &report );
-    preview.showMaximized();
-    preview.exec();
-*/
+    QSqlTableModel *stylist_model = new QSqlTableModel;
+    stylist_model->setTable("stylist");
+    stylist_model->setFilter(QString("name='%1'").arg(curStylistName));
+    stylist_model->select();
+    QSqlRecord record = stylist_model->record(0);
+    QColor stylistColor(record.value("color").toString());
 
-    QPrinter printer;
-    printer.setPaperSize(QPrinter::A4);
-    /*
-    QPrintDialog printer_dialog(&printer);
-    if (printer_dialog.exec() == QDialog::Accepted) {
-        QPainter painter(&printer);
-        painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
-        this->ui->daily_appt_tableWidget->render(&painter);
-    }
-*/
-    QString filename;
-    if(this->ui->tabWidget->currentIndex()==0){
-        filename = QApplication::applicationDirPath().append("/").append(QString("SalonDayReport_").append(this->ui->daily_appt_date_dateEdit->date().toString(global_config.date_format)).append("_").append(QTime::currentTime().toString()).append(".pdf"));
+    KDReports::Report report;
+    report.setMargins(10,10,10,10);
+    report.setHeaderBodySpacing(10);
 
+    report.header().addElement(KDReports::ImageElement(this->ui->company_logo_label_4->pixmap()->scaled(80,80)),Qt::AlignRight);
+    //Set Company Information
+    KDReports::TextElement companyName(this->companyName);
+    companyName.setBold(true);
+    companyName.setPointSize(12);
+    report.header().addElement(companyName);
+
+    KDReports::TextElement companySlogan(this->companySlogan);
+    companyName.setBold(true);
+    companyName.setPointSize(8);
+    report.header().addElement(companySlogan);
+
+    KDReports::TextElement companyPhone(this->companyPhone);
+    companyName.setBold(true);
+    companyName.setPointSize(8);
+    report.header().addElement(companyPhone);
+
+    KDReports::TextElement companyAddress(this->companyAddress);
+    companyName.setBold(true);
+    companyName.setPointSize(8);
+    report.header().addElement(companyAddress);
+
+    KDReports::TextElement companyStateCity(this->ui->company_state_city_label_4->text());
+    companyName.setBold(true);
+    companyName.setPointSize(8);
+    report.header().addElement(companyStateCity);
+    // Add Title
+    KDReports::TextElement title;
+    title.setText(QString("%1 appointments for %2").arg(curStylistName).arg(curDate));
+    title.setBold(true);
+    title.setPointSize(14);
+    report.addElement(title,Qt::AlignCenter);
+    report.addVerticalSpacing(5);
+    KDReports::AutoTableElement table(appt_assoc_names_model);
+    table.setHeaderBackground(QBrush(stylistColor));
+    table.setWidth(200-report.leftPageMargins()-report.rightPageMargins());
+    report.addElement( table,Qt::AlignCenter );
+    if(pdfFileName.isEmpty()){
+        // show a print preview
+        KDReports::PreviewDialog preview( &report );
+        preview.showMaximized();
+        preview.exec();
     }else{
-        filename = QApplication::applicationDirPath().append("/").append(QString("SytlistDayReport_").append(this->ui->daily_appt_date_dateEdit->date().toString(global_config.date_format)).append("_").append(QTime::currentTime().toString()).append(".pdf"));
+        report.exportToFile(pdfFileName);
     }
-    //Paramètres d'impression
-    //QPrinter printer(QPrinter::HighResolution);
-    printer.setOutputFileName(filename);
-    printer.setPaperSize(QPrinter::A4);
-    printer.setOutputFormat(QPrinter::PdfFormat);
-
-    QPainter painter(&printer);
-    painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
-    if(this->ui->tabWidget->currentIndex()==0){
-        this->ui->daily_appt_tableWidget->render( &painter );
-    }else{
-        this->ui->employee_day_tableWidget->render( &painter );
-    }
-    painter.end();
-    return filename;
+    return pdfFileName;
 }
 void MainWindow::showAboutDialog(){
     AboutDialog dialog;
     dialog.exec();
+}
+void MainWindow::showApptStylistReportDialog(){
+    ApptbyStylistReportDialog dialog;
+    dialog.ui->stylist_comboBox->setModel(stylist_model);
+    dialog.ui->stylist_comboBox->setModelColumn(stylist_model->fieldIndex("name"));
+    dialog.ui->stylist_comboBox->setCurrentText(this->ui->stylist_comboBox->currentText());
+    dialog.ui->employee_day_date_dateEdit->setDate(this->ui->employee_day_date_dateEdit->date());
+    if(dialog.exec()){
+        generateApptbyStylistReport(dialog.ui->employee_day_date_dateEdit->date().toString(global_config.date_format),dialog.ui->stylist_comboBox->currentText());
+    }
 }
 
 void MainWindow::tableSelectionChanged(const QItemSelection & selected, const QItemSelection & deselected){
@@ -711,7 +742,6 @@ void MainWindow::make_connections(){
     QObject::connect(this->ui->employee_day_date_dateEdit,SIGNAL(dateChanged(QDate)),this,SLOT(create_employee_appt()));
     QObject::connect(this->ui->stylist_comboBox,SIGNAL(currentTextChanged(QString)),this,SLOT(create_employee_appt()));
     QObject::connect(this->ui->tabWidget,SIGNAL(currentChanged(int)),this,SLOT(tabChanged(int)));
-    QObject::connect(this->ui->actionAdd_Break,SIGNAL(triggered()),this,SLOT(genPdfUser()));
     QObject::connect(this->ui->daily_appt_tableWidget->selectionModel(),SIGNAL(selectionChanged(QItemSelection,QItemSelection)),this,SLOT(tableSelectionChanged(QItemSelection,QItemSelection)));
     QObject::connect(this->ui->employee_day_tableWidget->selectionModel(),SIGNAL(selectionChanged(QItemSelection,QItemSelection)),this,SLOT(tableSelectionChanged(QItemSelection,QItemSelection)));
     QObject::connect(this->ui->actionDelete_Record,SIGNAL(triggered()),this,SLOT(deleteSelectedAppt()));
@@ -721,12 +751,18 @@ void MainWindow::make_connections(){
     QObject::connect(this->ui->actionEmail,SIGNAL(triggered()),this,SLOT(showEmailConfigDialog()));
     QObject::connect(this->ui->actionCompany,SIGNAL(triggered()),this,SLOT(showCompanyConfigDialog()));
     QObject::connect(this->ui->actionAbout_Tech_Scheduler,SIGNAL(triggered()),this,SLOT(showAboutDialog()));
+    QObject::connect(this->ui->action_report_Appointments_Stylist,SIGNAL(triggered()),this,SLOT(showApptStylistReportDialog()));
+
 
 }
 void MainWindow::SendEmail(){
     QStringList files;
     QFile tmp_file;
-    tmp_file.setFileName(this->genPdfUser());
+    QString curStylistName = this->ui->stylist_comboBox->currentText();
+    QString curDate = this->ui->employee_day_date_dateEdit->date().toString(global_config.date_format);
+    QString curReportFileName = QString("ApptsbyStylist").append(QDate::currentDate().toString(global_config.date_format).append(QTime::currentTime().toString()).append(".pdf"));
+    tmp_file.setFileName(this->generateApptbyStylistReport(curDate,curStylistName,curReportFileName));
+
     if(tmp_file.open(QIODevice::ReadOnly)){
         files<<this->fileName;
         tmp_file.close();
@@ -734,7 +770,7 @@ void MainWindow::SendEmail(){
     //qDebug()<<files;
     Smtp* smtp = new Smtp(this->username, this->password, this->serverName, this->port);
     connect(smtp, SIGNAL(status(QString)), this, SLOT(mailSent(QString)));
-    QObject::connect(smtp,SIGNAL(log(QString)),this,SLOT(updateLog(QString)));
+    //QObject::connect(smtp,SIGNAL(log(QString)),this,SLOT(updateLog(QString)));
     this->ui->statusBar->showMessage("Sending Email...");
     if(!files.isEmpty())
         smtp->sendMail(this->username, this->rcpt , this->subject,this->message, files );
