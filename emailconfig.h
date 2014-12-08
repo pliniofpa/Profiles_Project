@@ -31,9 +31,6 @@ public:
     QString getFileDirectory();
     void setFileDirectory(QString directory);
 
-private slots:
-    void on_pushButton_clicked();
-
 private:
     Ui::emailConfig *ui;
 };

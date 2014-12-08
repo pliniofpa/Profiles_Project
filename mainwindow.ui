@@ -473,7 +473,7 @@
      <normaloff>:/images/images/1413781129_Send.png</normaloff>:/images/images/1413781129_Send.png</iconset>
    </property>
    <property name="text">
-    <string>Send Email</string>
+    <string>Send Schedule to Stylist's Email</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>

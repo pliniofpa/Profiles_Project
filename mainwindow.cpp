@@ -116,7 +116,7 @@ void MainWindow::updateCompanyInformation(){
     }
 }
 
-QString MainWindow::generateApptbyStylistReport(QString date, QString stylist_name, QString pdfFileName=QString()){
+void MainWindow::generateApptbyStylistReport(QString date, QString stylist_name, QString pdfFileName=QString()){
     QSqlTableModel *appt_assoc_names_model = new QSqlTableModel;
     appt_assoc_names_model->setTable("appt_by_stylist_report_view");
     QString curDate = date;
@@ -141,10 +141,11 @@ QString MainWindow::generateApptbyStylistReport(QString date, QString stylist_na
     stylist_model->select();
     QSqlRecord record = stylist_model->record(0);
     QColor stylistColor(record.value("color").toString());
-
+    //Set Email Address
+    this->rcpt = record.value("email").toString();
     KDReports::Report report;
     report.setMargins(10,10,10,10);
-    report.setHeaderBodySpacing(10);
+    report.setHeaderBodySpacing(5);
 
     report.header().addElement(KDReports::ImageElement(this->ui->company_logo_label_4->pixmap()->scaled(80,80)),Qt::AlignRight);
     //Set Company Information
@@ -188,10 +189,15 @@ QString MainWindow::generateApptbyStylistReport(QString date, QString stylist_na
         KDReports::PreviewDialog preview( &report );
         preview.showMaximized();
         preview.exec();
-    }else{
+    }else{        
         report.exportToFile(pdfFileName);
-    }
-    return pdfFileName;
+        QString htmlFileName = pdfFileName.replace(".pdf",".html");
+        report.exportToHtml(htmlFileName);
+        QFile htmlFile(htmlFileName);
+        htmlFile.open(QIODevice::ReadOnly);
+        QString htmlDocument(htmlFile.readAll());
+        this->message = htmlDocument;
+    }    
 }
 void MainWindow::showAboutDialog(){
     AboutDialog dialog;
@@ -239,19 +245,13 @@ void MainWindow::showEmailConfigDialog(){
     config.setPort(this->port);
     config.setUserName(this->username);
     config.setPassword(this->password);
-    config.setRcpt(this->rcpt);
     config.setSubject(this->subject);
-    config.setMessage(this->message);
-    config.setFileDirectory(this->fileDir);
     if(config.exec()){
         this->serverName = config.getServerName();
         this->port = config.getPort();
         this->username = config.getUserName();
         this->password = config.getPassword();
-        this->rcpt = config.getRcpt();
         this->subject = config.getSubject();
-        this->message = config.getMessage();
-        this->fileDir = config.getFileDirectory();
     }
 }
 void MainWindow::deleteSelectedAppt(){
@@ -760,11 +760,12 @@ void MainWindow::SendEmail(){
     QFile tmp_file;
     QString curStylistName = this->ui->stylist_comboBox->currentText();
     QString curDate = this->ui->employee_day_date_dateEdit->date().toString(global_config.date_format);
-    QString curReportFileName = QString("ApptsbyStylist").append(QDate::currentDate().toString(global_config.date_format).append(QTime::currentTime().toString()).append(".pdf"));
-    tmp_file.setFileName(this->generateApptbyStylistReport(curDate,curStylistName,curReportFileName));
+    QString curReportFileName = QString("ApptsbyStylist").append(".pdf");
+    this->generateApptbyStylistReport(curDate,curStylistName,curReportFileName);
+    tmp_file.setFileName(curReportFileName);
 
     if(tmp_file.open(QIODevice::ReadOnly)){
-        files<<this->fileName;
+        files<<curReportFileName;
         tmp_file.close();
     }
     //qDebug()<<files;
@@ -776,7 +777,6 @@ void MainWindow::SendEmail(){
         smtp->sendMail(this->username, this->rcpt , this->subject,this->message, files );
     else
         smtp->sendMail(this->username, this->rcpt , this->subject,this->message);
-    this->fileName="";
     this->ui->statusBar->clearMessage();
 }
 
@@ -785,8 +785,10 @@ void MainWindow::tabChanged(int current){
     this->ui->employee_day_tableWidget->selectionModel()->clear();
     if(current==0){
         create_daily_appt();
+        this->ui->actionSend_Email->setEnabled(false);
     }else{
         create_employee_appt();
+        this->ui->actionSend_Email->setEnabled(true);
     }
 }
 
@@ -800,6 +802,7 @@ void MainWindow::showEditStylistDialog(){
     EditStylistDialog dialog;
     dialog.exec();
     //Update the Daily Appoitments Table
+    this->stylist_model->select();
     this->create_daily_appt();
 }
 void MainWindow::showEditServiceDialog(){

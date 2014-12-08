@@ -33,7 +33,7 @@ public slots:
     void create_daily_appt();    
     void create_employee_appt();
     //Exporter la liste des utilisateurs
-    QString generateApptbyStylistReport(QString date, QString stylist_name, QString pdfFileName);
+    void generateApptbyStylistReport(QString date, QString stylist_name, QString pdfFileName);
     void tableSelectionChanged(const QItemSelection & selected, const QItemSelection & deselected);
     void deleteSelectedAppt();
     void editSelectedAppt();
@@ -55,7 +55,7 @@ private:
     void make_connections();
     int getApptDurationInMinutes(QTime begin_time, QTime end_time);
     //About Email
-    QString serverName,username,password,subject,message,rcpt,fileDir,fileName;
+    QString serverName,username,password,subject,message,rcpt;
     int port;
     //About Company
     QString companyName,companyPhone,companySlogan,companyAddress,companyState,companyCity,companyEmail,companyLogoFile;

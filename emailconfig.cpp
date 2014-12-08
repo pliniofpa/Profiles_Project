@@ -17,23 +17,12 @@ emailConfig::~emailConfig()
 {
     delete ui;
 }
-QString emailConfig::getMessage(){
-    return this->ui->message->toPlainText();
-}
-void emailConfig::setMessage(QString message){
-    this->ui->message->setPlainText(message);
-}
+
 int emailConfig::getPort(){
     return this->ui->port->text().toInt();
 }
 void emailConfig::setPort(int port){
     this->ui->port->setText(QString::number(port));
-}
-QString emailConfig::getRcpt(){
-    return this->ui->rcptAddress->text();
-}
-void emailConfig::setRcpt(QString rcpt){
-    this->ui->rcptAddress->setText(rcpt);
 }
 QString emailConfig::getServerName(){
     return this->ui->serverName->text();
@@ -58,24 +47,4 @@ QString emailConfig::getPassword(){
 }
 void emailConfig::setPassword(QString password){
     this->ui->paswd->setText(password);
-}
-QString emailConfig::getFileDirectory(){
-    return this->ui->fileDirectory_lineEdit->text();
-}
-void emailConfig::setFileDirectory(QString directory){
-    this->ui->fileDirectory_lineEdit->setText(directory);
-}
-
-void emailConfig::on_pushButton_clicked()
-{
-    //QFileDialog fileDialog(this);
-    //fileDialog.setViewMode(QFileDialog::List);
-    //fileDialog.setWindowTitle("Select The Directory Where You Want to Save the CSV Files.");
-    //fileDialog.setOptions(QFileDialog::ShowDirsOnly);
-    do{
-        this->ui->fileDirectory_lineEdit->setText(QFileDialog::getExistingDirectory(this,"Select The Directory Where You Want to Save the CSV Files."));
-        //fileDialog.show();
-    }
-    while(this->ui->fileDirectory_lineEdit->text().isEmpty());
-
 }
