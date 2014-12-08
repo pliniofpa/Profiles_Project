@@ -42,6 +42,7 @@
 #include "smtp/smtp.h"
 #include "companyconfigdialog.h"
 #include "ui_companyconfigdialog.h"
+#include "aboutdialog.h"
 struct GlobalConfig;
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -113,7 +114,8 @@ void MainWindow::updateCompanyInformation(){
     }
 }
 
-void MainWindow::genPdfUser(){
+QString MainWindow::genPdfUser(){
+    /*
     KDReports::Report report;
     QSqlTableModel *appt_assoc_names_model = new QSqlTableModel();
     appt_assoc_names_model->setTable("appt_assoc_names");
@@ -133,32 +135,48 @@ void MainWindow::genPdfUser(){
     report.addElement( KDReports::AutoTableElement( appt_assoc_names_model ) );
     // show a print preview
     KDReports::PreviewDialog preview( &report );
+    preview.showMaximized();
     preview.exec();
+*/
 
-    /*
     QPrinter printer;
     printer.setPaperSize(QPrinter::A4);
+    /*
     QPrintDialog printer_dialog(&printer);
     if (printer_dialog.exec() == QDialog::Accepted) {
         QPainter painter(&printer);
         painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
         this->ui->daily_appt_tableWidget->render(&painter);
     }
+*/
+    QString filename;
+    if(this->ui->tabWidget->currentIndex()==0){
+        filename = QApplication::applicationDirPath().append("/").append(QString("SalonDayReport_").append(this->ui->daily_appt_date_dateEdit->date().toString(global_config.date_format)).append("_").append(QTime::currentTime().toString()).append(".pdf"));
 
-    QString filename="D:/users.pdf";
+    }else{
+        filename = QApplication::applicationDirPath().append("/").append(QString("SytlistDayReport_").append(this->ui->daily_appt_date_dateEdit->date().toString(global_config.date_format)).append("_").append(QTime::currentTime().toString()).append(".pdf"));
+    }
     //Paramètres d'impression
     //QPrinter printer(QPrinter::HighResolution);
     printer.setOutputFileName(filename);
-    //printer.setPaperSize(QPrinter::A4);
+    printer.setPaperSize(QPrinter::A4);
     printer.setOutputFormat(QPrinter::PdfFormat);
 
     QPainter painter(&printer);
     painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
-    this->ui->daily_appt_tableWidget->render( &painter );
+    if(this->ui->tabWidget->currentIndex()==0){
+        this->ui->daily_appt_tableWidget->render( &painter );
+    }else{
+        this->ui->employee_day_tableWidget->render( &painter );
+    }
     painter.end();
-    */
-
+    return filename;
 }
+void MainWindow::showAboutDialog(){
+    AboutDialog dialog;
+    dialog.exec();
+}
+
 void MainWindow::tableSelectionChanged(const QItemSelection & selected, const QItemSelection & deselected){
     if(selected.indexes().length()){
         //this->ui->mainToolBar->setEnabled(true);
@@ -702,12 +720,13 @@ void MainWindow::make_connections(){
     QObject::connect(this->ui->actionSend_Email,SIGNAL(triggered()),this,SLOT(SendEmail()));
     QObject::connect(this->ui->actionEmail,SIGNAL(triggered()),this,SLOT(showEmailConfigDialog()));
     QObject::connect(this->ui->actionCompany,SIGNAL(triggered()),this,SLOT(showCompanyConfigDialog()));
+    QObject::connect(this->ui->actionAbout_Tech_Scheduler,SIGNAL(triggered()),this,SLOT(showAboutDialog()));
 
 }
 void MainWindow::SendEmail(){
     QStringList files;
     QFile tmp_file;
-    tmp_file.setFileName(this->fileName);
+    tmp_file.setFileName(this->genPdfUser());
     if(tmp_file.open(QIODevice::ReadOnly)){
         files<<this->fileName;
         tmp_file.close();
@@ -816,7 +835,7 @@ void MainWindow::loadUerPreferences(){
     this->port = toLoad.value("serverPort",465).toInt();
     this->username = toLoad.value("username","").toString();
     this->password = toLoad.value("password","").toString();
-    this->rcpt = toLoad.value("repipient","").toString();
+    this->rcpt = toLoad.value("recipient","").toString();
     this->subject = toLoad.value("subject","Tech Scheduler Notification Email").toString();
     this->message = toLoad.value("message","").toString();
     toLoad.endGroup();

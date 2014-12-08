@@ -33,7 +33,7 @@ public slots:
     void create_daily_appt();    
     void create_employee_appt();
     //Exporter la liste des utilisateurs
-    void genPdfUser();
+    QString genPdfUser();
     void tableSelectionChanged(const QItemSelection & selected, const QItemSelection & deselected);
     void deleteSelectedAppt();
     void editSelectedAppt();
@@ -44,6 +44,7 @@ public slots:
     void mailSent(QString status);
     void showCompanyConfigDialog();
     void updateCompanyInformation();
+    void showAboutDialog();
 
 
 private:

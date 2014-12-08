@@ -38,7 +38,8 @@ SOURCES += main.cpp\
     apptdeleteconfirmationdialog.cpp \
     smtp/smtp.cpp \
     emailconfig.cpp \
-    companyconfigdialog.cpp
+    companyconfigdialog.cpp \
+    aboutdialog.cpp
 
 HEADERS  += mainwindow.h \
     newcustomerdialog.h \
@@ -63,7 +64,8 @@ HEADERS  += mainwindow.h \
     apptdeleteconfirmationdialog.h \
     smtp/smtp.h \
     emailconfig.h \
-    companyconfigdialog.h
+    companyconfigdialog.h \
+    aboutdialog.h
 
 FORMS    += mainwindow.ui \
     newcustomerdialog.ui \
@@ -80,7 +82,8 @@ FORMS    += mainwindow.ui \
     apptconflitingdialog.ui \
     apptdeleteconfirmationdialog.ui \
     emailconfig.ui \
-    companyconfigdialog.ui
+    companyconfigdialog.ui \
+    aboutdialog.ui
 
 RESOURCES += \
     resources.qrc
