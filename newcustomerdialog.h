@@ -19,8 +19,16 @@ public:
 
 private:
     Ui::NewCustomerDialog *ui;
+    bool nameOK,emailOK,cityOK,phoneOK,phone2OK,nickNameOk,addressOK;
+
 private slots:
     void validateEmail(QString text);
+    void validateName(QString text);
+    void validatePhone(QString text);
+    void validatePhone2(QString text);
+    void validateCity(QString text);
+    void validateAddress(QString text);
+    void validationFinished();
 };
 
 #endif // NEWCUSTOMERDIALOG_H

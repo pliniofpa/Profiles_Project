@@ -377,6 +377,9 @@
      <normaloff>:/images/images/pencil3.png</normaloff>:/images/images/pencil3.png</iconset>
    </property>
    <property name="text">
+    <string>&amp;Edit Record</string>
+   </property>
+   <property name="toolTip">
     <string>Edit Record</string>
    </property>
    <property name="shortcut">

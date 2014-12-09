@@ -215,6 +215,7 @@ void MainWindow::showApptStylistReportDialog(){
 }
 
 void MainWindow::tableSelectionChanged(const QItemSelection & selected, const QItemSelection & deselected){
+    Q_UNUSED(deselected)
     if(selected.indexes().length()){
         //this->ui->mainToolBar->setEnabled(true);
         if(selected.indexes().at(0).data().isValid()){
@@ -237,7 +238,7 @@ void MainWindow::tableSelectionChanged(const QItemSelection & selected, const QI
 void MainWindow::mailSent(QString status)
 {
     if(status == "Message sent")
-        QMessageBox::warning( 0, this->windowTitle(), tr( "Message sent!\n\n" ) );
+        QMessageBox::information( 0, this->windowTitle(), tr( "Message sent!\n\n" ) );
 }
 void MainWindow::showEmailConfigDialog(){
     emailConfig config;
