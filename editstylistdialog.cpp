@@ -56,7 +56,7 @@ EditStylistDialog::EditStylistDialog(QWidget *parent) :
     //Hides color column
     this->ui->stylist_tableView->hideColumn(stylist_model->fieldIndex("color"));
     //Set Color in the color in the color column of stylist_tableView
-    QTableView *curTable = this->ui->stylist_tableView;
+    //QTableView *curTable = this->ui->stylist_tableView;
     for(;;){
     break;
     }
@@ -140,6 +140,7 @@ void EditStylistDialog::combobox_text_changed(QString text){
 }
 
 void EditStylistDialog::selectionChanged(const QItemSelection & selected, const QItemSelection & deselected){
+    Q_UNUSED(deselected)
     if(selected.indexes().length()){
         this->ui->edit_pushButton->setEnabled(true);
         int column_count = this->stylist_model->columnCount();
@@ -167,7 +168,7 @@ void EditStylistDialog::searchDateChanged(QDate date){
     QString tmp_filter = QString(filter).arg(date.toString(global_config.date_format));
     qDebug() << tmp_filter;
     this->stylist_model->setFilter(tmp_filter);
-    int row = this->ui->stylist_tableView->selectionModel()->currentIndex().row();
+    //int row = this->ui->stylist_tableView->selectionModel()->currentIndex().row();
     qDebug() << this->stylist_model->data(this->ui->stylist_tableView->selectionModel()->currentIndex()).toString();
 }
 

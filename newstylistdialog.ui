@@ -124,7 +124,7 @@
            <string>Birthday:</string>
           </property>
           <property name="buddy">
-           <cstring>email_lineEdit_4</cstring>
+           <cstring>birthday_dateEdit</cstring>
           </property>
          </widget>
         </item>

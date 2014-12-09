@@ -159,6 +159,7 @@ void EditAppointmentDialog::combobox_text_changed(QString text){
 }
 
 void EditAppointmentDialog::selectionChanged(const QItemSelection & selected, const QItemSelection & deselected){
+    Q_UNUSED(deselected)
     if(selected.indexes().length()){
         this->ui->edit_pushButton->setEnabled(true);
         QString date_string = selected.indexes().at(this->appt_assoc_names_model->fieldIndex("date")).data(0).toString();
@@ -196,7 +197,7 @@ void EditAppointmentDialog::searchDateChanged(QDate date){
     QString tmp_filter = QString(filter).arg(date.toString(global_config.date_format));
     qDebug() << tmp_filter;
     this->appt_assoc_names_model->setFilter(tmp_filter);
-    int row = this->ui->appointment_tableView->selectionModel()->currentIndex().row();
+    //int row = this->ui->appointment_tableView->selectionModel()->currentIndex().row();
     qDebug() << this->appt_assoc_names_model->data(this->ui->appointment_tableView->selectionModel()->currentIndex()).toString();
 }
 

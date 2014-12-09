@@ -117,6 +117,7 @@ void EditServiceDialog::combobox_text_changed(QString text){
 }
 
 void EditServiceDialog::selectionChanged(const QItemSelection & selected, const QItemSelection & deselected){
+    Q_UNUSED(deselected)
     if(selected.indexes().length()){
         this->ui->edit_pushButton->setEnabled(true);
         //int id = selected.indexes().at(0).data(0).toInt();
@@ -138,7 +139,7 @@ void EditServiceDialog::searchDateChanged(QDate date){
     QString tmp_filter = QString(filter).arg(date.toString(global_config.date_format));
     qDebug() << tmp_filter;
     this->service_model->setFilter(tmp_filter);
-    int row = this->ui->service_tableView->selectionModel()->currentIndex().row();
+    //int row = this->ui->service_tableView->selectionModel()->currentIndex().row();
     qDebug() << this->service_model->data(this->ui->service_tableView->selectionModel()->currentIndex()).toString();
 }
 

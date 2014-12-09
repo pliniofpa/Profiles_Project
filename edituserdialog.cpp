@@ -113,6 +113,7 @@ void EditUserDialog::combobox_text_changed(QString text){
 }
 
 void EditUserDialog::selectionChanged(const QItemSelection & selected, const QItemSelection & deselected){
+    Q_UNUSED(deselected)
     if(selected.indexes().length()){
         this->ui->edit_pushButton->setEnabled(true);
         //int id = selected.indexes().at(0).data(0).toInt();
@@ -134,7 +135,7 @@ void EditUserDialog::searchDateChanged(QDate date){
     QString tmp_filter = QString(filter).arg(date.toString(global_config.date_format));
     qDebug() << tmp_filter;
     this->user_model->setFilter(tmp_filter);
-    int row = this->ui->user_tableView->selectionModel()->currentIndex().row();
+    //int row = this->ui->user_tableView->selectionModel()->currentIndex().row();
     qDebug() << this->user_model->data(this->ui->user_tableView->selectionModel()->currentIndex()).toString();
 }
 void EditUserDialog::beginEditing(){
