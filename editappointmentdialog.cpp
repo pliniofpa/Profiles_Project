@@ -152,7 +152,7 @@ void EditAppointmentDialog::combobox_text_changed(QString text){
                         this->ui->search_dateEdit->setVisible(true);
                     }
     if(this->exactlyMatch){
-        this->filter = QString("%1 = '%%2%'").arg(field);
+        this->filter = QString("%1 = '%2'").arg(field);
     }else{
         this->filter = QString("%1 LIKE '%%2%'").arg(field);
     }

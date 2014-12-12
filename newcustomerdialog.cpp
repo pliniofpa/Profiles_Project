@@ -20,8 +20,10 @@ NewCustomerDialog::NewCustomerDialog(QWidget *parent) :
     //Sets Phone Validator
     QObject::connect(this->ui->phone1_lineEdit_2,SIGNAL(textEdited(QString)),this,SLOT(validatePhone(QString)));
     QObject::connect(this->ui->phone2_lineEdit_3,SIGNAL(textEdited(QString)),this,SLOT(validatePhone2(QString)));
-    //Sets Phone Validator
+    //Sets City Validator
     QObject::connect(this->ui->city_lineEdit_7,SIGNAL(textChanged(QString)),this,SLOT(validateCity(QString)));
+    //Sets Address Validator
+    QObject::connect(this->ui->address_lineEdit_5,SIGNAL(textChanged(QString)),this,SLOT(validateAddress(QString)));
     //Disables Ok flags for default
     nameOK=false;
     emailOK=false;
@@ -29,7 +31,6 @@ NewCustomerDialog::NewCustomerDialog(QWidget *parent) :
     phoneOK=false;
     phone2OK=true;
     addressOK = false;
-    nickNameOk=false;
     validationFinished();
 }
 
@@ -116,7 +117,8 @@ void NewCustomerDialog::validateAddress(QString text){
 }
 
 void NewCustomerDialog::validationFinished(){
-    if(emailOK && nameOK && nickNameOk && phoneOK && cityOK && phone2OK && addressOK){
+
+    if(emailOK && nameOK && phoneOK && cityOK && phone2OK && addressOK){
         this->ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(true);
     }
     else{

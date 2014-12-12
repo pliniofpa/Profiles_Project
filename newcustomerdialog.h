@@ -19,7 +19,7 @@ public:
 
 private:
     Ui::NewCustomerDialog *ui;
-    bool nameOK,emailOK,cityOK,phoneOK,phone2OK,nickNameOk,addressOK;
+    bool nameOK,emailOK,cityOK,phoneOK,phone2OK,addressOK;
 
 private slots:
     void validateEmail(QString text);

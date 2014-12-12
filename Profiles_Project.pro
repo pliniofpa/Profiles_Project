@@ -11,7 +11,6 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 TARGET = Profiles_Project
 TEMPLATE = app
 
-QMAKE_MAC_SDK=macosx10.9
 ICON = app.icns
 
 win32:RC_FILE = resources.rc
@@ -92,10 +91,7 @@ RESOURCES += \
     resources.qrc
 
 OTHER_FILES += \
-    resources.rc
+    resources.rc \
+    KDReports.pri
 
-
-win32: LIBS += -L$$PWD/KDAB/KDReports-1.5.99/lib/ -lkdreportsd1
-
-INCLUDEPATH += $$PWD/KDAB/KDReports-1.5.99/include
-DEPENDPATH += $$PWD/KDAB/KDReports-1.5.99/include
+include($$PWD/KDReports.pri)

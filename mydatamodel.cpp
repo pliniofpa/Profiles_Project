@@ -20,7 +20,7 @@ MyDataModel::MyDataModel(QString table_name, QSqlDatabase *db, QObject *parent) 
     this->table_model->setTable(table_name);
     this->table_model->setEditStrategy(QSqlTableModel::OnManualSubmit);
     this->table_model->select();
-    qDebug()<<this->table_model->database().tables();
+    //qDebug()<<this->table_model->database().tables();
     //Recovery default Record with all fiedls name
     this->record = new QSqlRecord();
     *this->record  = query_model.record();

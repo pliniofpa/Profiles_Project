@@ -355,7 +355,6 @@
    <addaction name="actionAdd"/>
    <addaction name="actionEdit_Record"/>
    <addaction name="actionDelete_Record"/>
-   <addaction name="actionAdd_Break"/>
    <addaction name="actionSend_Email"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>

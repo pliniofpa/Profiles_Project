@@ -37,7 +37,7 @@
 #include "ui_apptdeleteconfirmationdialog.h"
 #include "emailconfig.h"
 #include <QSqlError>
-#include <KDReports/KDReports>
+#include <KDReports-master/src/KDReports/KDReports>
 #include <QMessageBox>
 #include "smtp/smtp.h"
 #include "companyconfigdialog.h"
@@ -189,7 +189,7 @@ void MainWindow::generateApptbyStylistReport(QString date, QString stylist_name,
         KDReports::PreviewDialog preview( &report );
         preview.showMaximized();
         preview.exec();
-    }else{        
+    }else{
         report.exportToFile(pdfFileName);
         QString htmlFileName = pdfFileName.replace(".pdf",".html");
         report.exportToHtml(htmlFileName);
@@ -197,7 +197,7 @@ void MainWindow::generateApptbyStylistReport(QString date, QString stylist_name,
         htmlFile.open(QIODevice::ReadOnly);
         QString htmlDocument(htmlFile.readAll());
         this->message = htmlDocument;
-    }    
+    }
 }
 void MainWindow::showAboutDialog(){
     AboutDialog dialog;
@@ -229,10 +229,11 @@ void MainWindow::tableSelectionChanged(const QItemSelection & selected, const QI
             this->ui->actionAdd->setEnabled(true);
             this->ui->actionAdd_Break->setEnabled(true);
         }
-        //}
-
     }else{
-        //this->ui->mainToolBar->setEnabled(false);
+        this->ui->actionDelete_Record->setEnabled(false);
+        this->ui->actionEdit_Record->setEnabled(false);
+        this->ui->actionAdd->setEnabled(false);
+        this->ui->actionAdd_Break->setEnabled(false);
     }
 }
 void MainWindow::mailSent(QString status)
